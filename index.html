@@ -36,7 +36,7 @@
             font-family: var(--font-body);
             background-color: var(--color-background);
             color: var(--color-text);
-            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVדהVlZWV/f39/f39ISEh1dXVSUlJcXFzZ2dnS0tLe3t7Z2dnLy8v5+fn39/f09PTw8PDk5OTi4uL6+vrx8fHq6urY2Njh4eHi4uK43//gAAAAKUlEQVR42u3PNwEAIBAAsPEFAv//Z0+sU+k2sU0AUgAP1jLNy83nZ8rT/w/g6g9g5wDb7QGg/gDb7QGg/gDb7QGg/gDb7QGg/gDb7QGg/gDb7QGg/gDb7QGg/gDb7QGg/gDb7QGg/gDb7QGg/gDb7QGAJAtkAB3iAAAAAElFTkSuQmCC");
+            background: linear-gradient(175deg, var(--color-background) 0%, var(--color-off-white) 100%);
         }
 
         /* --- ANIMASI --- */
@@ -126,6 +126,31 @@
             margin: 10px 0 20px 0;
         }
 
+        /* [KREASI] Latar belakang khusus untuk bagian tertentu */
+        #kutipan, #rsvp {
+            padding-top: 5vh;
+            padding-bottom: 5vh;
+            margin-left: -25px; /* Menetralkan padding dari #main-content */
+            margin-right: -25px; /* Menetralkan padding dari #main-content */
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+        #kutipan {
+            /* Latar belakang abu-abu lembut */
+            background-color: #f7f7f7;
+        }
+        #rsvp {
+            background-color: #F6F8F6; /* Warna hijau sangat pucat */
+        }
+
+        .section h2 {
+            font-family: var(--font-nama);
+            font-size: clamp(3.2rem, 13vw, 4.5rem);
+            color: var(--color-gold);
+            font-weight: 400;
+            margin: 10px 0 20px 0;
+        }
+
         .salam { 
             font-family: var(--font-display); 
             font-weight: 400; 
@@ -159,7 +184,7 @@
         .quote {
             margin-top: 40px; padding: 25px; background-color: var(--color-off-white);
             border-left: 4px solid var(--color-gold); font-style: italic; text-align: left;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
         }
         .quote p:first-of-type {
             font-family: var(--font-display);
@@ -255,7 +280,7 @@
             grid-auto-flow: dense;
             gap: 10px;
             margin-top: 20px;
-        }
+        } 
         .gallery-item img {
             width: 100%;
             height: 100%;
@@ -264,7 +289,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, filter 0.3s ease;
         }
-        .gallery-item img:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .gallery-item img:hover { transform: scale(1.03); filter: brightness(1.05); }
         .item-tall { grid-row: span 2; }
         .item-wide { grid-column: span 2; }
 
@@ -311,7 +336,7 @@
             position: fixed; bottom: 20px; right: 20px; z-index: 99;
             width: 50px; height: 50px; background-color: var(--color-green);
             color: white; border-radius: 50%; display: none; align-items: center; justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; border: 2px solid white; transition: transform 0.3s ease, opacity 0.3s ease;
         }
         #music-toggle.show { display: flex; }
         #music-toggle.playing .icon { animation: spin 4s linear infinite; }
@@ -320,6 +345,228 @@
         #music-toggle.playing .icon-play { display: none; }
     </style>
 
+    <!-- [KREASI] CSS untuk RSVP -->
+    <style>
+        .rsvp-form {
+            background-color: var(--color-off-white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: left;
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--color-dark-green);
+        }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-green);
+            box-shadow: 0 0 0 3px rgba(107, 125, 105, 0.2);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .rsvp-button {
+            width: 100%;
+            background-color: var(--color-green);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .rsvp-button:hover {
+            background-color: var(--color-dark-green);
+        }
+        .rsvp-button {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        /* [KREASI] Perbaikan form agar tidak zoom di iPhone dan tampilan lebih baik */
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            font-size: 16px; /* WAJIB 16px agar tidak auto-zoom di iOS */
+        }
+
+        /* [KREASI] Tombol pilihan kehadiran yang lebih modern */
+        .kehadiran-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .kehadiran-options label {
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+        .kehadiran-options input[type="radio"] {
+            display: none; /* Sembunyikan radio button asli */
+        }
+        .kehadiran-options input[type="radio"]:checked + label {
+            background-color: var(--color-green);
+            color: white;
+            font-weight: 600;
+        }
+
+
+        /* [KREASI] CSS untuk Galeri Ucapan */
+        .wishes-gallery {
+            margin-top: 20px;
+            max-height: 450px; /* Batasi tinggi agar tidak terlalu panjang */
+            overflow-y: auto; /* Aktifkan scroll jika konten melebihi tinggi */
+            padding: 15px 5px;
+            /* Hapus background dari sini karena sudah ada di container */
+        }
+        /* Scrollbar kustom untuk galeri ucapan */
+        .wishes-gallery::-webkit-scrollbar {
+            width: 6px;
+        }
+        .wishes-gallery::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+        .wishes-gallery::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+        .wishes-gallery::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+        }
+        /* [KREASI] Desain Gelembung Chat untuk Ucapan */
+        .wish-card {
+            background-color: var(--color-off-white);
+            color: var(--color-text);
+            padding: 15px 20px;
+            border-radius: 20px 20px 20px 5px; /* Bentuk gelembung yang lebih organik */
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            text-align: left;
+            opacity: 0; /* Mulai dengan transparan untuk animasi */
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out forwards;
+            position: relative;
+            max-width: 90%;
+            margin-left: 0;
+            border: 1px solid #EAE8E1;
+        }
+        .wish-card::before {
+            content: "";
+            position: absolute;
+            bottom: -1px; left: -10px;
+            border: 12px solid transparent; border-bottom-color: #EAE8E1;
+        }
+        .wish-card p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            position: relative; /* Diperlukan untuk posisi tanda kutip */
+            padding-left: 1.5em; /* Beri ruang untuk tanda kutip pembuka */
+        }
+        /* [KREASI] Tambahkan tanda kutip pada ucapan */
+        .wish-card p::before {
+            content: '“';
+            position: absolute;
+            left: 0;
+            top: -0.1em;
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: rgba(107, 125, 105, 0.3);
+            line-height: 1;
+        }
+        .wish-card .sender-name {
+            font-weight: 600;
+            color: var(--color-dark-green);
+            margin-bottom: 5px;
+            display: block;
+        }
+        #no-wishes-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+            font-style: italic;
+            display: none; /* Sembunyikan secara default */
+        }
+    </style>
+    <!-- [KREASI] CSS untuk Fitur Kado Online -->
+    <style>
+        .gift-card {
+            background: linear-gradient(135deg, var(--color-dark-green), var(--color-green));
+            color: white;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .gift-card::after {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 150px; height: 150px;
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        .gift-card p {
+            margin: 0;
+            color: rgba(255,255,255,0.9);
+        }
+        .bank-logo {
+            max-height: 25px;
+            margin-bottom: 15px;
+        }
+        .account-number {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin: 5px 0 5px 0;
+            color: white;
+        }
+        .copy-button {
+            background-color: rgba(255,255,255,0.9);
+            color: var(--color-dark-green);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .copy-button:hover { background-color: white; transform: scale(1.05); }
+    </style>
     <!-- [KREASI] CSS untuk Ornamen Hiasan -->
     <style>
         .ornament-container {
@@ -355,21 +602,23 @@
         <svg class="icon icon-pause" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
     </div>
 
-    <div id="cover">
+    <!-- Menggunakan tag <header> untuk cover depan -->
+    <header id="cover">
         <div class="background-slider">
             <div class="slide"></div> <div class="slide"></div> <div class="slide"></div>
         </div>
         <div class="cover-content">
             <h1>Undangan Metatah</h1>
             <p>Kamis, 31 Desember 2025</p>
-            <p>Kepada<br>Bapak/Ibu/Saudara/i</p>
+            <p style="margin-top: 20px;">Kepada<br>Bapak/Ibu/Saudara/i</p>
             <button id="open-invitation">BUKA UNDANGAN</button>
         </div>
-    </div>
+    </header>
 
-    <div id="main-content">
+    <!-- Menggunakan tag <main> untuk konten utama -->
+    <main id="main-content">
         
-        <section class="section">
+        <section id="pembuka" class="section">
             <h2 class="salam hidden anim-zoom-in">Om Swastyastu</h2>
             <p>
                 <span class="line-wrapper hidden anim-fade-in-up" style="--delay: 0.1s;">Atas Asung Kertha Wara Nugraha Ida Sang Hyang Widhi Wasa/Tuhan Yang Maha Esa</span>
@@ -383,7 +632,7 @@
             <h3 class="name hidden anim-fade-in-up" style="--delay: 0.1s;">Ni Made Ayu Handayani</h3>
         </section>
 
-        <section class="section" style="margin-bottom: 8vh; color: var(--color-dark-green);">
+        <section id="keluarga" class="section" style="margin-bottom: 8vh; color: var(--color-dark-green);">
             <p class="hidden anim-fade-in-up" style="font-size: clamp(1.1rem, 4vw, 1.2rem);">Putri dari pasangan</p>
             <h3 class="parents hidden anim-fade-in-up" style="--delay: 0.1s;">
                 Bapak I Wayan Pratama<br>&<br>Ibu Ni Wayan Puspita
@@ -392,7 +641,7 @@
         
         <div class="divider hidden anim-zoom-in"></div>
 
-        <section class="section">
+        <section id="kutipan" class="section">
             <div class="quote">
                 <!-- [KREASI] Ornamen Kanan ditempatkan di sini -->
                 <div class="ornament-container hidden"> <!-- Tambahkan hidden ke container agar observer mendeteksi container -->
@@ -405,7 +654,7 @@
             </div>
         </section>
 
-        <section class="section">
+        <section id="acara" class="section">
             <div class="event-card-new hidden anim-slide-from-left">
                 <div class="event-card-image-wrapper">
                     <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Acara Metatah">
@@ -431,7 +680,7 @@
             </div>
         </section>
 
-        <section class="section hidden anim-fade-in-up">
+        <section id="countdown-section" class="section hidden anim-fade-in-up">
             <h2>Menuju Acara</h2>
             <div id="countdown" class="countdown">
                 <div> <span id="days">00</span> <small>Hari</small> </div>
@@ -441,7 +690,7 @@
             </div>
         </section>
 
-        <section class="section">
+        <section id="galeri" class="section">
             <h2 class="hidden anim-fade-in-up">Foto Galeri</h2>
             <!-- [KREASI] Ornamen Kiri ditempatkan di sini --> 
             <div class="ornament-container hidden"> <!-- Tambahkan hidden ke container agar observer mendeteksi container -->
@@ -462,7 +711,7 @@
             </div>
         </section>
         
-        <section class="section">
+        <section id="momen" class="section">
             <h2 class="hidden anim-fade-in-up">Momen Spesial</h2>
             <div class="slider-container hidden anim-zoom-in">
                 <div class="slider-track">
@@ -476,24 +725,85 @@
             </div>
         </section>
 
-        <section class="section hidden anim-zoom-in">
+        <section id="video" class="section hidden anim-zoom-in">
             <h2>Video</h2>
             <div class="video-container">
                 <iframe src="https://www.youtube.com/embed/hT0XG2j6wng" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </section>
         
-        <div class="divider hidden anim-zoom-in"></div>
-
-        <section class="section">
-            <p class="hidden anim-fade-in-up">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/ Ibu/ Saudara/i, berkenan hadir untuk memberikan doa restu.</p>
-            <p class="hidden anim-fade-in-up" style="--delay: 0.1s;">Atas kehadiran dan doa restunya kami ucapkan terimakasih.</p>
-            <h2 class="salam hidden anim-fade-in-up" style="--delay: 0.3s;">Om Shanti Shanti Shanti Om</h2>
-            <p class="hidden anim-fade-in-up" style="--delay: 0.4s;">Kami yang berbahagia</p>
-            <p class="family-name hidden anim-fade-in-up" style="--delay: 0.5s;">Kel. I Wayan Pratama & Ibu Ni Wayan Puspita</p>
+        <section id="hadiah" class="section">
+            <h2 class="hidden anim-fade-in-up">Kirim Hadiah</h2>
+            <p class="hidden anim-fade-in-up" style="--delay: 0.1s;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara online.</p>
+            <div class="gift-card hidden anim-zoom-in" style="--delay: 0.3s;">
+                <!-- Ganti dengan logo bank Anda -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/BCA_logo.svg" alt="Logo Bank BCA" class="bank-logo">
+                <p>No. Rekening:</p>
+                <h3 class="account-number" id="account-number">123 456 7890</h3>
+                <p>a.n. Ni Made Ayu Handayani</p>
+                <button class="copy-button" id="copy-account-button">
+                    <span>Salin Rekening</span>
+                </button>
+            </div>
         </section>
 
-    </div>
+        <section id="rsvp" class="section">
+            <h2 class="hidden anim-fade-in-up" style="font-family: var(--font-nama); font-size: clamp(3.2rem, 13vw, 4.5rem);">Konfirmasi Kehadiran</h2>
+            <form id="rsvp-form" class="rsvp-form hidden anim-zoom-in" style="--delay: 0.2s;">
+                <div class="form-group">
+                    <label for="nama">Nama Anda</label>
+                    <input type="text" id="nama" name="nama" placeholder="Tuliskan nama Anda" required>
+                </div>
+                <div class="form-group">
+                    <label for="kehadiran">Konfirmasi Kehadiran</label>
+                    <!-- [KREASI] Mengganti <select> dengan radio button yang lebih modern -->
+                    <div class="kehadiran-options">
+                        <input type="radio" id="hadir" name="kehadiran" value="Hadir" required>
+                        <label for="hadir">Hadir</label>
+
+                        <input type="radio" id="tidak-hadir" name="kehadiran" value="Tidak Hadir">
+                        <label for="tidak-hadir">Tidak Hadir</label>
+                    </div>
+                    <select id="kehadiran-hidden" name="kehadiran" required style="display: none;"></select>
+                </div>
+                <div class="form-group" id="jumlah-tamu-group" style="display: none;">
+                    <label for="jumlah">Jumlah Tamu (termasuk Anda)</label>
+                    <select id="jumlah" name="jumlah">
+                        <option value="1">1 Orang</option>
+                        <option value="2">2 Orang</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ucapan">Ucapan & Doa</label>
+                    <textarea id="ucapan" name="ucapan" placeholder="Tuliskan ucapan dan doa Anda di sini..." required></textarea>
+                </div>
+                <button type="submit" class="rsvp-button">
+                    <span>Kirim Konfirmasi</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+                <p id="form-status" style="text-align: center; margin-top: 15px;"></p>
+            </form>
+
+            <!-- [KREASI] Galeri Ucapan -->
+            <div id="wishes-gallery-container" class="hidden anim-fade-in-up" style="--delay: 0.4s; margin-top: 40px; display: none;">
+                <h2 style="font-family: var(--font-nama); font-size: clamp(3.2rem, 13vw, 4.5rem);">Ucapan & Doa</h2>
+                <p id="no-wishes-message">Jadilah yang pertama mengirim ucapan!</p>
+                <div id="wishes-gallery" class="wishes-gallery"></div>
+            </div>
+        </section>
+
+        <div class="divider hidden anim-zoom-in"></div>
+
+        <!-- Menggunakan tag <footer> untuk bagian penutup -->
+        <footer class="section">
+            <p class="hidden anim-fade-in-up">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i, berkenan hadir untuk memberikan doa restu.</p>
+            <p class="hidden anim-fade-in-up" style="--delay: 0.1s;">Atas kehadiran dan doa restunya, kami ucapkan terima kasih.</p>
+            <h2 class="salam hidden anim-fade-in-up" style="--delay: 0.3s; margin-top: 2rem;">Om Shanti Shanti Shanti Om</h2>
+            <p class="hidden anim-fade-in-up" style="--delay: 0.4s; margin-top: 2rem;">Kami yang berbahagia,</p>
+            <p class="family-name hidden anim-fade-in-up" style="--delay: 0.5s;">Kel. I Wayan Pratama & Ibu Ni Wayan Puspita</p>
+        </footer>
+
+    </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -509,7 +819,7 @@
             if ('scrollRestoration' in history) {
                 history.scrollRestoration = 'manual';
             }
-            // Lalu, secara manual paksa scroll ke paling atas.
+            // Secara manual paksa scroll ke paling atas saat halaman dimuat.
                 window.scrollTo(0, 0);
 
             observeElements();
@@ -522,7 +832,7 @@
                 
                 // Gulir ke awal konten utama dengan mulus
                 mainContent.scrollIntoView({ behavior: 'smooth' });
-                
+
                 music.play().catch(error => console.log("Autoplay dicegah oleh browser."));
                 musicToggle.classList.add('show', 'playing');
             });
@@ -535,50 +845,161 @@
                 }
             });
 
-            const countdownDate = new Date("December 31, 2025 10:00:00").getTime();
-            const countdownFunction = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = countdownDate - now;
-                if (distance < 0) {
-                    clearInterval(countdownFunction);
-                    document.getElementById("countdown").innerHTML = "<h3>Acara Telah Selesai</h3>";
-                    return;
-                }
-                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("days").innerText = d.toString().padStart(2, '0');
-                document.getElementById("hours").innerText = h.toString().padStart(2, '0');
-                document.getElementById("minutes").innerText = m.toString().padStart(2, '0');
-                document.getElementById("seconds").innerText = s.toString().padStart(2, '0');
-            }, 1000);
+            // Fungsi untuk hitung mundur
+            function startCountdown() {
+                const countdownDate = new Date("December 31, 2025 10:00:00").getTime();
+                const countdownEl = document.getElementById("countdown");
+                
+                const interval = setInterval(function() {
+                    const now = new Date().getTime();
+                    const distance = countdownDate - now;
+
+                    if (distance < 0) {
+                        clearInterval(interval);
+                        if(countdownEl) countdownEl.innerHTML = "<h3>Acara Telah Selesai</h3>";
+                        return;
+                    }
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    document.getElementById("days").innerText = days.toString().padStart(2, '0');
+                    document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+                    document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+                    document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+                }, 1000);
+            }
+            startCountdown();
 
             function observeElements() {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            // Jika elemen masuk ke viewport, tambahkan kelas 'visible' untuk memicu animasi masuk.
                             entry.target.classList.add('visible');
                         } else {
-                            // Jika elemen keluar dari viewport, hapus kelas 'visible'.
-                            // Ini akan mengembalikan elemen ke state 'hidden' dan memicu animasi keluar.
+                            // Hapus 'visible' saat keluar viewport agar animasi bisa diputar lagi saat scroll kembali
                             entry.target.classList.remove('visible');
                         }
                     });
                 }, { 
-                    /*
-                     * rootMargin: '0px 0px -200px 0px'
-                     * Ini "memperkecil" area deteksi viewport sebesar 200px dari bawah.
-                     * Artinya, animasi keluar akan terpicu saat elemen masih 200px terlihat di atas tepi bawah layar,
-                     * memberikan efek "langsung hilang saat menyentuh batas bawah".
-                     * threshold: 0.01 memastikan animasi masuk juga terpicu segera setelah elemen muncul.
-                     */
-                    rootMargin: '0px 0px -200px 0px', threshold: 0.01 
+                    rootMargin: '0px 0px -150px 0px', // Memicu animasi sedikit sebelum elemen benar-benar hilang dari layar
+                    threshold: 0.01 
                 }); 
                 
                 document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
             }
+
+            // --- GIFT CARD SCRIPT ---
+            const copyButton = document.getElementById('copy-account-button');
+            const accountNumber = document.getElementById('account-number').innerText;
+
+            copyButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(accountNumber.replace(/\s/g, '')).then(() => {
+                    // Berhasil disalin
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span>Berhasil Disalin!</span>';
+                    this.style.backgroundColor = '#c8e6c9'; // Warna hijau muda
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.backgroundColor = '';
+                    }, 2000);
+                }).catch(err => console.error('Gagal menyalin: ', err));
+            });
+
+            // --- RSVP FORM SCRIPT ---
+            const rsvpForm = document.getElementById('rsvp-form');
+            const kehadiranOptions = document.querySelectorAll('input[name="kehadiran"]');
+            const jumlahTamuGroup = document.getElementById('jumlah-tamu-group');
+            const formStatus = document.getElementById('form-status');
+            // Hidden select untuk kompatibilitas dengan Apps Script yang sudah ada
+            const hiddenSelect = document.getElementById('kehadiran-hidden');
+
+            kehadiranOptions.forEach(option => {
+                option.addEventListener('change', function() {
+                    // Update hidden select value
+                    hiddenSelect.value = this.value;
+
+                    if (this.value === 'Hadir') {
+                        jumlahTamuGroup.style.display = 'block';
+                    } else {
+                        jumlahTamuGroup.style.display = 'none';
+                    }
+                });
+            });
+
+            rsvpForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbz2_Ll9pbZ7t0zGykTfwL_aKYHiCknnpNVeVHosnNs9iSCj6M2-N9T2heuXgK14cTs/exec'; // <-- INI URL ANDA
+                const formButton = this.querySelector('button');
+
+                formButton.disabled = true;
+                formButton.textContent = 'Mengirim...';
+                formStatus.textContent = '';
+
+                fetch(scriptURL, { method: 'POST', body: new FormData(this)})
+                    .then(response => response.json()) // Ubah untuk membaca respons JSON
+                    .then(data => {
+                        console.log('Success!', data);
+                        formStatus.textContent = 'Terima kasih, konfirmasi Anda telah terkirim!';
+                        formStatus.style.color = 'var(--color-green)';
+                        rsvpForm.reset();
+                        jumlahTamuGroup.style.display = 'none';
+                        // Panggil loadWishes() lagi untuk memuat ulang galeri secara dinamis
+                        loadWishes();
+                    }).finally(() => {
+                        formButton.disabled = false;
+                        formButton.textContent = 'Kirim Konfirmasi';
+                    })
+                    .catch(error => console.error('Error!', error.message));
+            });
+
+            // --- WISHES GALLERY SCRIPT ---
+            function loadWishes() {
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbz2_Ll9pbZ7t0zGykTfwL_aKYHiCknnpNVeVHosnNs9iSCj6M2-N9T2heuXgK14cTs/exec'; // <-- INI URL ANDA
+                const wishesContainer = document.getElementById('wishes-gallery');
+                const noWishesMessage = document.getElementById('no-wishes-message');
+                const galleryContainer = document.getElementById('wishes-gallery-container');
+
+                fetch(scriptURL)
+                    .then(response => response.json())
+                    .then(result => {
+                        // Selalu tampilkan kontainer galeri
+                        galleryContainer.style.display = 'block';
+
+                        if (result.result === 'success' && result.data.length > 0) {
+                            wishesContainer.style.display = 'block';
+                            noWishesMessage.style.display = 'none';
+
+                            wishesContainer.innerHTML = ''; // Kosongkan dulu
+
+                            result.data.forEach((wish, index) => {
+                                const card = document.createElement('div');
+                                card.className = 'wish-card';
+                                // Tambahkan delay animasi agar muncul satu per satu
+                                card.style.animationDelay = `${index * 0.1}s`;
+
+                                const sender = document.createElement('span');
+                                sender.className = 'sender-name';
+                                sender.textContent = wish.nama;
+
+                                const message = document.createElement('p');
+                                message.textContent = wish.ucapan;
+
+                                card.appendChild(sender);
+                                card.appendChild(message);
+                                wishesContainer.appendChild(card);
+                            });
+                        } else {
+                            // Jika tidak ada ucapan, tampilkan pesan
+                            wishesContainer.style.display = 'none';
+                            noWishesMessage.style.display = 'block';
+                        }
+                    })
+                    .catch(error => console.error('Error fetching wishes!', error.message));
+            }
+            loadWishes(); // Panggil fungsi saat halaman dimuat
         });
     </script>
 
