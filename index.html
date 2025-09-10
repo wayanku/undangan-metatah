@@ -647,6 +647,20 @@
             color: var(--color-dark-green);
             transform: scale(1.1);
         }
+
+        /* [KREASI BARU] Kartu pembungkus untuk RSVP dan Galeri Ucapan */
+        .rsvp-wishes-container {
+            background-color: var(--color-off-white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-top: 20px;
+            border: 1px solid #EAE8E1;
+        }
+        .rsvp-wishes-container h2 {
+            margin-top: 0; /* Hapus margin atas pada judul di dalam kartu */
+        }
+
     </style>
 </head>
 <body>
@@ -826,7 +840,9 @@
 
         <section id="rsvp" class="section">
             <h2 class="hidden anim-fade-in-up" style="font-family: var(--font-nama); font-size: clamp(3.2rem, 13vw, 4.5rem);">Konfirmasi Kehadiran</h2>
-            <form id="rsvp-form" class="rsvp-form hidden anim-zoom-in" style="--delay: 0.2s;">
+            <!-- [KREASI BARU] Pembungkus untuk form dan galeri ucapan -->
+            <div class="rsvp-wishes-container hidden anim-zoom-in" style="--delay: 0.2s;">
+                <form id="rsvp-form" class="rsvp-form">
                 <div class="form-group">
                     <label for="nama">Nama Anda</label>
                     <input type="text" id="nama" name="nama" placeholder="Tuliskan nama Anda" required>
@@ -841,7 +857,6 @@
                         <input type="radio" id="tidak-hadir" name="kehadiran" value="Tidak Hadir">
                         <label for="tidak-hadir">Tidak Hadir</label>
                     </div>
-                    <select id="kehadiran-hidden" name="kehadiran" required style="display: none;"></select>
                 </div>
                 <div class="form-group" id="jumlah-tamu-group" style="display: none;">
                     <label for="jumlah">Jumlah Tamu (termasuk Anda)</label>
@@ -856,13 +871,15 @@
                 </div>
                 <button type="submit" class="rsvp-button">
                     <span>Kirim Konfirmasi</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    <svg class="icon-send feather feather-send" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                 </button>
                 <p id="form-status" style="text-align: center; margin-top: 15px;"></p>
-            </form>
+                </form>
 
-            <!-- [KREASI] Galeri Ucapan -->
-            <div id="wishes-gallery-container" class="hidden anim-fade-in-up" style="--delay: 0.4s; margin-top: 40px; display: none;">
+            </div>
+
+            <!-- [PENYESUAIAN] Galeri Ucapan dipindahkan ke luar kartu -->
+            <div id="wishes-gallery-container" class="hidden anim-fade-in-up" style="margin-top: 40px; display: none; --delay: 0.4s;">
                 <h2 style="font-family: var(--font-nama); font-size: clamp(3.2rem, 13vw, 4.5rem);">Ucapan & Doa</h2>
                 <p id="no-wishes-message">Jadilah yang pertama mengirim ucapan!</p>
                 <div id="wishes-gallery" class="wishes-gallery"></div>
@@ -1003,14 +1020,9 @@
             const kehadiranOptions = document.querySelectorAll('input[name="kehadiran"]');
             const jumlahTamuGroup = document.getElementById('jumlah-tamu-group');
             const formStatus = document.getElementById('form-status');
-            // Hidden select untuk kompatibilitas dengan Apps Script yang sudah ada
-            const hiddenSelect = document.getElementById('kehadiran-hidden');
 
             kehadiranOptions.forEach(option => {
                 option.addEventListener('change', function() {
-                    // Update hidden select value
-                    hiddenSelect.value = this.value;
-
                     if (this.value === 'Hadir') {
                         jumlahTamuGroup.style.display = 'block';
                     } else {
@@ -1022,27 +1034,39 @@
             rsvpForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbz2_Ll9pbZ7t0zGykTfwL_aKYHiCknnpNVeVHosnNs9iSCj6M2-N9T2heuXgK14cTs/exec'; // <-- INI URL ANDA
-                const formButton = this.querySelector('button');
+                const formButton = this.querySelector('.rsvp-button');
+                const buttonText = formButton.querySelector('span');
+                const buttonIcon = formButton.querySelector('.icon-send');
 
                 formButton.disabled = true;
-                formButton.textContent = 'Mengirim...';
+                buttonText.textContent = 'Mengirim...';
+                if(buttonIcon) buttonIcon.style.display = 'none'; // Sembunyikan ikon saat mengirim
                 formStatus.textContent = '';
 
                 fetch(scriptURL, { method: 'POST', body: new FormData(this)})
                     .then(response => response.json()) // Ubah untuk membaca respons JSON
                     .then(data => {
-                        console.log('Success!', data);
-                        formStatus.textContent = 'Terima kasih, konfirmasi Anda telah terkirim!';
-                        formStatus.style.color = 'var(--color-green)';
-                        rsvpForm.reset();
-                        jumlahTamuGroup.style.display = 'none';
-                        // Panggil loadWishes() lagi untuk memuat ulang galeri secara dinamis
-                        loadWishes();
+                        if(data.result === 'success') {
+                            console.log('Success!', data);
+                            formStatus.textContent = 'Terima kasih, konfirmasi Anda telah terkirim!';
+                            formStatus.style.color = 'var(--color-green)';
+                            rsvpForm.reset();
+                            jumlahTamuGroup.style.display = 'none';
+                            // Panggil loadWishes() lagi untuk memuat ulang galeri secara dinamis
+                            loadWishes();
+                        } else {
+                            throw new Error(data.message || 'Terjadi kesalahan saat mengirim data.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error!', error.message);
+                        formStatus.textContent = 'Gagal mengirim konfirmasi. Silakan coba lagi.';
+                        formStatus.style.color = 'red';
                     }).finally(() => {
                         formButton.disabled = false;
-                        formButton.textContent = 'Kirim Konfirmasi';
-                    })
-                    .catch(error => console.error('Error!', error.message));
+                        buttonText.textContent = 'Kirim Konfirmasi';
+                        if(buttonIcon) buttonIcon.style.display = 'inline-block'; // Tampilkan kembali ikon
+                    });
             });
 
             // --- WISHES GALLERY SCRIPT ---
@@ -1075,7 +1099,7 @@
                                 sender.textContent = wish.nama;
 
                                 const message = document.createElement('p');
-                                message.textContent = wish.ucapan;
+                                message.textContent = `"${wish.ucapan}"`; // [PENYESUAIAN] Menambahkan tanda kutip
 
                                 card.appendChild(sender);
                                 card.appendChild(message);
