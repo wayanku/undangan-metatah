@@ -7,7 +7,7 @@
     <!-- IMPORT FONT KUSTOM -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Poppins:wght@300;400;600&family=Tangerine:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Upright:wght@400;600;700&family=Nanum+Myeongjo&family=Pinyon+Script&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -16,12 +16,10 @@
             --color-dark-green: #5A6B58;
             --color-background: #FFFFFF;
             --color-text: #4a4a4a;
-            --color-off-white: #F9F6F1;
-            --font-display: 'Playfair Display', serif;
-            --font-body: 'Poppins', sans-serif;
-            --font-artistic: 'Great Vibes', cursive; 
+            --color-off-white: #FBFBF8;
+            --font-display: 'Cormorant Upright', serif;
+            --font-body: 'Nanum Myeongjo', serif;
             --font-nama: 'Pinyon Script', cursive;
-            --font-tangerine: 'Tangerine', cursive;
         }
 
         *, *::before, *::after { box-sizing: border-box; }
@@ -53,14 +51,24 @@
 
         /* --- PERUBAHAN ANIMASI INTI --- */
         .hidden { 
-            opacity: 0; 
-            /* Kecepatan animasi diubah dari 1.2s menjadi 0.8s untuk respon lebih cepat */
-            transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1); 
+            opacity: 0;
+            /* 
+             * Transisi ini akan berlaku untuk kedua state: saat kelas .visible ditambahkan (animasi masuk)
+             * dan saat kelas .visible dihapus (animasi keluar).
+             */
+            transition: opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
         .anim-fade-in-up { transform: translateY(30px); }
         .anim-zoom-in { transform: scale(0.9); }
         .anim-slide-from-left { transform: translateX(-50px); }
-        .visible { opacity: 1; transform: none; }
+        .anim-slide-from-right { transform: translateX(50px); }
+        .visible { opacity: 1; transform: translateY(0) scale(1) translateX(0); }
+
+        /* [KREASI] Tambahan untuk animasi per baris dengan delay */
+        .line-wrapper { display: block; /* Memastikan setiap span ada di baris baru */ }
+        .line-wrapper.hidden {
+            transition-delay: var(--delay, 0s);
+        }
         
         /* --- HALAMAN DEPAN (COVER) --- */
         #cover {
@@ -89,7 +97,7 @@
             width: 100%; display: flex; flex-direction: column; align-items: center;
         }
         .cover-content > * { opacity: 0; animation: fadeInUp 1s ease-out forwards; }
-        .cover-content h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 9vw, 3rem); margin: 0 0 5px 0; color: var(--color-gold); font-weight: 500; animation-delay: 0.5s; }
+        .cover-content h1 { font-family: var(--font-display); font-size: clamp(2.5rem, 10vw, 3.5rem); margin: 0 0 5px 0; color: var(--color-gold); font-weight: 600; animation-delay: 0.5s; }
         .cover-content p { margin: 4px 0; font-size: 0.9rem; animation-delay: 0.7s; }
         #open-invitation {
             background-color: var(--color-green); color: white; border: none; padding: 12px 35px; border-radius: 50px; font-family: var(--font-body); font-size: 1rem; cursor: pointer;
@@ -102,18 +110,18 @@
         /* --- KONTEN UTAMA --- */
         #main-content { max-width: 700px; margin: 0 auto; padding: 5vh 25px; text-align: center; }
         .section { margin-bottom: 12vh; }
-        .section p { line-height: 1.8; font-size: 0.95rem; }
+        .section p { line-height: 1.8; font-size: clamp(0.9rem, 2.5vw, 1rem); }
 
         .section h2 {
-            font-family: var(--font-tangerine);
-            font-size: clamp(3.2rem, 14vw, 4.5rem);
+            font-family: var(--font-nama);
+            font-size: clamp(3rem, 13vw, 4.2rem);
             color: var(--color-gold);
-            font-weight: 700;
+            font-weight: 400;
             margin: 10px 0 20px 0;
         }
 
         .salam { 
-            font-family: var(--font-nama); 
+            font-family: var(--font-display); 
             font-weight: 400; 
             margin-bottom: 1.5rem;
         }
@@ -124,16 +132,24 @@
         }
 
         .profile-pic-container {
-            width: clamp(180px, 50vw, 220px); height: clamp(180px, 50vw, 220px); border-radius: 50%; margin: 30px auto;
-            padding: 8px; background: var(--color-gold); box-shadow: 0 0 0 2px white, 0 5px 25px rgba(0,0,0,0.15);
+            position: relative;
+            width: clamp(240px, 65vw, 280px); 
+            height: clamp(240px, 65vw, 280px); 
+            margin: 30px auto;
             transition: transform 0.4s ease;
         }
         .profile-pic-container:hover {
             transform: scale(1.03) rotate(1deg);
         }
-        .profile-pic { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid white; }
+        .profile-pic { width: 80%; height: 80%; object-fit: cover; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .frame-overlay {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; /* Agar tidak menghalangi interaksi dengan elemen di belakangnya */
+        }
         
-        .parents { font-size: clamp(1rem, 4vw, 1.2rem); margin-top: 20px; line-height: 1.7; }
+        .parents { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.2rem, 5vw, 1.5rem); margin-top: 20px; line-height: 1.7; }
         .quote {
             margin-top: 40px; padding: 25px; background-color: var(--color-off-white);
             border-left: 4px solid var(--color-gold); font-style: italic; text-align: left;
@@ -149,6 +165,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            background-color: var(--color-off-white);
             text-align: left;
         }
         .event-card-image-wrapper {
@@ -167,7 +184,6 @@
         }
         .event-content-wrapper {
             display: flex;
-            background-color: var(--color-off-white);
         }
         .event-sidebar {
             background-color: var(--color-green);
@@ -182,9 +198,9 @@
             transform: rotate(180deg);
             color: white;
             font-family: var(--font-body), sans-serif;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1.1rem;
-            letter-spacing: 4px;
+            letter-spacing: 10px;
             text-transform: uppercase;
         }
         .event-details-main {
@@ -192,7 +208,7 @@
             width: 100%;
         }
         .date-section { display: flex; align-items: center; gap: 15px; }
-        .date-number { font-family: var(--font-display); font-size: 4rem; line-height: 1; color: var(--color-text); }
+        .date-number { font-family: var(--font-display); font-weight: 700; font-size: 4rem; line-height: 1; color: var(--color-text); }
         .date-text { font-size: 1rem; line-height: 1.5; }
         .event-details-main hr { border: none; height: 1px; background-color: #ddd; margin: 20px 0; }
         .event-details-main p { margin: 5px 0; font-size: 0.95rem; }
@@ -205,27 +221,28 @@
         .map-button-outline:hover { background-color: var(--color-dark-green); color: white; }
 
         .countdown {
-            display: flex; justify-content: center; font-family: var(--font-body);
-            gap: 10px; margin-top: 30px;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 15px; margin-top: 30px;
+            font-family: var(--font-display);
         }
         .countdown div {
-            background: var(--color-green); color: white; border: 2px solid var(--color-green);
-            border-radius: 10px; padding: 10px; text-align: center; width: 60px;
-            box-shadow: 0 8px 15px rgba(107, 125, 105, 0.25);
+            background-color: var(--color-off-white);
+            border: 1px solid #eee;
+            border-radius: 15px; padding: 15px 10px; text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             transition: transform 0.3s ease;
         }
         .countdown div:hover {
             transform: translateY(-5px);
         }
-        .countdown div span { display: block; font-size: 1.5em; font-weight: bold; }
-        .countdown div small { display: block; font-size: 0.8em; }
+        .countdown div span { display: block; font-size: clamp(1.8rem, 7vw, 2.5rem); font-weight: 600; color: var(--color-green); line-height: 1.1; }
+        .countdown div small { display: block; font-size: clamp(0.7rem, 2vw, 0.8rem); color: var(--color-text); margin-top: 5px; letter-spacing: 1px; text-transform: uppercase; }
         @media (max-width: 600px) {
-            .countdown { gap: 5px; }
-            .countdown div { width: 55px; padding: 8px 5px; }
-            .countdown div span { font-size: 1.2em; }
-            .countdown div small { font-size: 0.7em; }
+            .countdown { gap: 10px; }
         }
-
+        #countdown h3 {
+            grid-column: 1 / -1; font-family: var(--font-display); font-weight: 600; color: var(--color-dark-green);
+        }
         .gallery-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -285,7 +302,7 @@
         }
 
         #music-toggle {
-            position: fixed; bottom: 85px; right: 20px; z-index: 99;
+            position: fixed; bottom: 20px; right: 20px; z-index: 99;
             width: 50px; height: 50px; background-color: var(--color-green);
             color: white; border-radius: 50%; display: none; align-items: center; justify-content: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; border: 2px solid white;
@@ -322,32 +339,39 @@
 
     <div id="main-content">
         
-        <section class="section hidden anim-zoom-in">
-            <h2 class="salam">Om Swastyastu</h2>
-            <p>Atas Asung Kertha Wara Nugraha Ida Sang Hyang Widhi Wasa/Tuhan Yang Maha Esa kami bermaksud mengundang Bapak/Ibu/Saudara/i pada Upacara Manusa Yadnya Metatah (Potong Gigi) putri kami.</p>
+        <section class="section">
+            <h2 class="salam hidden anim-zoom-in">Om Swastyastu</h2>
+            <p>
+                <span class="line-wrapper hidden anim-fade-in-up" style="--delay: 0.1s;">Atas Asung Kertha Wara Nugraha Ida Sang Hyang Widhi Wasa/Tuhan Yang Maha Esa</span>
+                <span class="line-wrapper hidden anim-fade-in-up" style="--delay: 0.2s; color: var(--color-dark-green);">kami bermaksud mengundang Bapak/Ibu/Saudara/i pada Upacara Manusa Yadnya</span>
+                <span class="line-wrapper hidden anim-fade-in-up" style="--delay: 0.3s;">Metatah (Potong Gigi) putri kami.</span>
+            </p>
             <div class="profile-pic-container hidden anim-zoom-in">
                 <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Ni Made Ayu Handayani" class="profile-pic">
+                <img src="https://storage.googleapis.com/gemini-prod/images/f2355814-1e7c-4f14-93b4-5b1247f2762b.png" alt="Bingkai Ukiran" class="frame-overlay">
             </div>
-            <h3 class="name hidden anim-fade-in-up">Ni Made Ayu Handayani</h3>
+            <h3 class="name hidden anim-fade-in-up" style="--delay: 0.1s;">Ni Made Ayu Handayani</h3>
         </section>
 
-        <section class="section hidden anim-fade-in-up">
-            <p>Putri dari pasangan</p>
-            <h3 class="parents">Bapak I Wayan Pratama<br>&<br>Ibu Ni Wayan Puspita</h3>
+        <section class="section" style="margin-bottom: 8vh; color: var(--color-dark-green);">
+            <p class="hidden anim-fade-in-up" style="font-size: 1.1rem;">Putri dari pasangan</p>
+            <h3 class="parents hidden anim-fade-in-up" style="--delay: 0.1s;">
+                Bapak I Wayan Pratama<br>&<br>Ibu Ni Wayan Puspita
+            </h3>
         </section>
         
         <div class="divider hidden anim-zoom-in"></div>
 
-        <section class="section hidden anim-fade-in-up">
+        <section class="section">
             <div class="quote">
-                <p>"Devan bhavayatanena te deva bhavayantu vah parasparam bhavayantah sreyah param avapsyatha"</p>
-                <span style="font-style: normal;">(Bhagavad Gita 3:11)</span>
-                <p style="margin-top: 15px; font-style: normal;">Dengan ini (Yadnya), kami berbakti kepada Hyang Widhi dan dengan ini pula Hyang Widhi memelihara dan mengasihi kamu. Dengan saling memelihara satu sama lain, kamu akan mencapai kebaikan yang maha tinggi.</p>
+                <p class="hidden anim-fade-in-up">"Devan bhavayatanena te deva bhavayantu vah parasparam bhavayantah sreyah param avapsyatha"</p>
+                <span class="hidden anim-fade-in-up" style="--delay: 0.2s; font-style: normal; display: block;">(Bhagavad Gita 3:11)</span>
+                <p class="hidden anim-fade-in-up" style="--delay: 0.4s; margin-top: 15px; font-style: normal;">Dengan ini (Yadnya), kami berbakti kepada Hyang Widhi dan dengan ini pula Hyang Widhi memelihara dan mengasihi kamu. Dengan saling memelihara satu sama lain, kamu akan mencapai kebaikan yang maha tinggi.</p>
             </div>
         </section>
 
-        <section class="section hidden anim-slide-from-left">
-            <div class="event-card-new">
+        <section class="section">
+            <div class="event-card-new hidden anim-slide-from-left">
                 <div class="event-card-image-wrapper">
                     <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Acara Metatah">
                 </div>
@@ -384,15 +408,15 @@
 
         <section class="section">
             <h2 class="hidden anim-fade-in-up">Foto Galeri</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item item-tall hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1WdUubHMufgRhId4_BUltj21urHiTo6-_" alt="Galeri Foto 1" loading="lazy"> </div>
-                <div class="gallery-item hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1zVhjZBkVRQ2Pe8chZTUW7SH-UhozMvgs" alt="Galeri Foto 2" loading="lazy"> </div>
-                <div class="gallery-item hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Galeri Foto 3" loading="lazy"> </div>
+            <div class="gallery-grid" style="--delay: 0.2s;">
+                <div class="gallery-item item-tall hidden anim-slide-from-left"> <img src="https://lh3.googleusercontent.com/d/1WdUubHMufgRhId4_BUltj21urHiTo6-_" alt="Galeri Foto 1" loading="lazy"> </div>
+                <div class="gallery-item hidden anim-slide-from-right"> <img src="https://lh3.googleusercontent.com/d/1zVhjZBkVRQ2Pe8chZTUW7SH-UhozMvgs" alt="Galeri Foto 2" loading="lazy"> </div>
+                <div class="gallery-item hidden anim-zoom-in"> <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Galeri Foto 3" loading="lazy"> </div>
                 <div class="gallery-item item-wide hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1WdUubHMufgRhId4_BUltj21urHiTo6-_" alt="Galeri Foto 4" loading="lazy"> </div>
-                <div class="gallery-item item-tall hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1zVhjZBkVRQ2Pe8chZTUW7SH-UhozMvgs" alt="Galeri Foto 5" loading="lazy"> </div>
-                <div class="gallery-item hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Galeri Foto 6" loading="lazy"> </div>
-                <div class="gallery-item hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1WdUubHMufgRhId4_BUltj21urHiTo6-_" alt="Galeri Foto 7" loading="lazy"> </div>
-                <div class="gallery-item item-wide hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1zVhjZBkVRQ2Pe8chZTUW7SH-UhozMvgs" alt="Galeri Foto 8" loading="lazy"> </div>
+                <div class="gallery-item item-tall hidden anim-zoom-in"> <img src="https://lh3.googleusercontent.com/d/1zVhjZBkVRQ2Pe8chZTUW7SH-UhozMvgs" alt="Galeri Foto 5" loading="lazy"> </div>
+                <div class="gallery-item hidden anim-slide-from-left"> <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Galeri Foto 6" loading="lazy"> </div>
+                <div class="gallery-item hidden anim-slide-from-right"> <img src="https://lh3.googleusercontent.com/d/1WdUubHMufgRhId4_BUltj21urHiTo6-_" alt="Galeri Foto 7" loading="lazy"> </div>
+                <div class="gallery-item item-wide hidden anim-zoom-in"> <img src="https://lh3.googleusercontent.com/d/1zVhjZBkVRQ2Pe8chZTUW7SH-UhozMvgs" alt="Galeri Foto 8" loading="lazy"> </div>
                 <div class="gallery-item hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Galeri Foto 9" loading="lazy"> </div>
                 <div class="gallery-item hidden anim-fade-in-up"> <img src="https://lh3.googleusercontent.com/d/1WdUubHMufgRhId4_BUltj21urHiTo6-_" alt="Galeri Foto 10" loading="lazy"> </div>
             </div>
@@ -421,12 +445,12 @@
         
         <div class="divider hidden anim-zoom-in"></div>
 
-        <section class="section hidden anim-fade-in-up">
-            <p>Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/ Ibu/ Saudara/i, berkenan hadir untuk memberikan doa restu.</p>
-            <p>Atas kehadiran dan doa restunya kami ucapkan terimakasih.</p>
-            <h2 class="salam">Om Shanti Shanti Shanti Om</h2>
-            <p>Kami yang berbahagia</p>
-            <p class="family-name">Kel. I Wayan Pratama & Ibu Ni Wayan Puspita</p>
+        <section class="section">
+            <p class="hidden anim-fade-in-up">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/ Ibu/ Saudara/i, berkenan hadir untuk memberikan doa restu.</p>
+            <p class="hidden anim-fade-in-up" style="--delay: 0.1s;">Atas kehadiran dan doa restunya kami ucapkan terimakasih.</p>
+            <h2 class="salam hidden anim-fade-in-up" style="--delay: 0.3s;">Om Shanti Shanti Shanti Om</h2>
+            <p class="hidden anim-fade-in-up" style="--delay: 0.4s;">Kami yang berbahagia</p>
+            <p class="family-name hidden anim-fade-in-up" style="--delay: 0.5s;">Kel. I Wayan Pratama & Ibu Ni Wayan Puspita</p>
         </section>
 
     </div>
@@ -464,7 +488,7 @@
                 const distance = countdownDate - now;
                 if (distance < 0) {
                     clearInterval(countdownFunction);
-                    document.getElementById("countdown").innerHTML = "<h3>Acara Telah Berlangsung</h3>";
+                    document.getElementById("countdown").innerHTML = "<h3>Acara Telah Selesai</h3>";
                     return;
                 }
                 const d = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -481,16 +505,24 @@
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
+                            // Jika elemen masuk ke viewport, tambahkan kelas 'visible' untuk memicu animasi masuk.
                             entry.target.classList.add('visible');
                         } else {
-                            // --- INI BAGIAN PENTING YANG DITAMBAHKAN ---
-                            // Saat elemen tidak lagi terlihat di layar (keluar dari viewport),
-                            // hapus kelas 'visible'. Ini akan membuat elemen kembali ke
-                            // state 'hidden'-nya dan memicu transisi animasi keluar.
+                            // Jika elemen keluar dari viewport, hapus kelas 'visible'.
+                            // Ini akan mengembalikan elemen ke state 'hidden' dan memicu animasi keluar.
                             entry.target.classList.remove('visible');
                         }
                     });
-                }, { threshold: 0.1 }); // threshold 0.1 berarti animasi dipicu saat 10% elemen terlihat/hilang
+                }, { 
+                    /*
+                     * rootMargin: '0px 0px -100px 0px'
+                     * Ini "memperkecil" area deteksi viewport sebesar 100px dari bawah.
+                     * Artinya, animasi keluar akan terpicu saat elemen masih 100px terlihat di atas tepi bawah layar,
+                     * memberikan efek "langsung hilang saat menyentuh batas bawah".
+                     * threshold: 0.01 memastikan animasi masuk juga terpicu segera setelah elemen muncul.
+                     */
+                    rootMargin: '0px 0px -100px 0px', threshold: 0.01 
+                }); 
                 
                 document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
             }
