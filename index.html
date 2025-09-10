@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -504,10 +505,15 @@
             const musicToggle = document.getElementById('music-toggle');
             const mainContent = document.getElementById('main-content');
 
+            // [SOLUSI FINAL] Matikan fitur scroll restoration otomatis browser.
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+            // Lalu, secara manual paksa scroll ke paling atas.
+                window.scrollTo(0, 0);
 
-            // Jalankan observer dari awal
             observeElements();
-            
+
             openButton.addEventListener('click', function() {
                 cover.classList.add('opened');
                 // Buka kunci scroll pada html dan body
