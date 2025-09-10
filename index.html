@@ -114,6 +114,7 @@
         /* --- KONTEN UTAMA --- */
         #main-content { max-width: 700px; margin: 0 auto; padding: 5vh 25px; text-align: center; }
         .section { margin-bottom: 12vh; }
+        .section { position: relative; } /* Penting: Membuat section menjadi positioned parent untuk absolute children */
         .section p { line-height: 1.8; font-size: clamp(1rem, 2.5vw, 1.1rem); }
 
         .section h2 {
@@ -145,7 +146,7 @@
         .profile-pic-container:hover {
             transform: scale(1.03) rotate(1deg);
         }
-        .profile-pic { width: 80%; height: 80%; object-fit: cover; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .profile-pic { width: 82%; height: 82%; object-fit: cover; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .frame-overlay {
             position: absolute;
             inset: 0;
@@ -317,8 +318,32 @@
         #music-toggle.playing .icon-pause { display: block; }
         #music-toggle.playing .icon-play { display: none; }
     </style>
+
+    <!-- [KREASI] CSS untuk Ornamen Hiasan -->
+    <style>
+        .ornament-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden; /* Penting untuk menyembunyikan sebagian ornamen */
+            pointer-events: none;
+        }
+        .ornament-image {
+            position: absolute;
+            z-index: 5;
+            width: clamp(100px, 25vw, 200px);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+        .ornament-right { top: 10vh; right: -50%; /* Sembunyikan setengah di kanan */ }
+        .ornament-left { bottom: 10vh; left: -50%; transform: scaleX(-1); /* Sembunyikan setengah di kiri dan balik horizontal */ }
+        .ornament-image.visible {
+            right: -10px; /* Munculkan ke kanan */
+            left: -10px; /* Munculkan ke kiri */
+        }
+    </style>
 </head>
 <body>
+
 
     <audio id="background-music" loop>
         <source src="https://f.top4top.io/m_315007dq90.mp3" type="audio/mpeg">
@@ -352,7 +377,7 @@
             </p>
             <div class="profile-pic-container hidden anim-zoom-in">
                 <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Ni Made Ayu Handayani" class="profile-pic">
-                <img src="https://storage.googleapis.com/gemini-prod/images/f2355814-1e7c-4f14-93b4-5b1247f2762b.png" alt="Bingkai Ukiran" class="frame-overlay">
+                <img src="https://i.postimg.cc/Bbz7rp3b/frame-1.png" alt="Bingkai Ukiran" class="frame-overlay">
             </div>
             <h3 class="name hidden anim-fade-in-up" style="--delay: 0.1s;">Ni Made Ayu Handayani</h3>
         </section>
@@ -368,6 +393,11 @@
 
         <section class="section">
             <div class="quote">
+                <!-- [KREASI] Ornamen Kanan ditempatkan di sini -->
+                <div class="ornament-container hidden"> <!-- Tambahkan hidden ke container agar observer mendeteksi container -->
+                    <img src="https://i.postimg.cc/wTV7Qr69/tl.webp" alt="Hiasan" class="ornament-image ornament-right">
+                </div>
+
                 <p class="hidden anim-fade-in-up">"Devan bhavayatanena te deva bhavayantu vah parasparam bhavayantah sreyah param avapsyatha"</p>
                 <span class="hidden anim-fade-in-up" style="--delay: 0.2s; font-style: normal; display: block;">(Bhagavad Gita 3:11)</span>
                 <p class="hidden anim-fade-in-up" style="--delay: 0.4s; margin-top: 15px; font-style: normal;">Dengan ini (Yadnya), kami berbakti kepada Hyang Widhi dan dengan ini pula Hyang Widhi memelihara dan mengasihi kamu. Dengan saling memelihara satu sama lain, kamu akan mencapai kebaikan yang maha tinggi.</p>
@@ -412,6 +442,11 @@
 
         <section class="section">
             <h2 class="hidden anim-fade-in-up">Foto Galeri</h2>
+            <!-- [KREASI] Ornamen Kiri ditempatkan di sini --> 
+            <div class="ornament-container hidden"> <!-- Tambahkan hidden ke container agar observer mendeteksi container -->
+                <img src="https://i.postimg.cc/wTV7Qr69/tl.webp" alt="Hiasan" class="ornament-image ornament-left">
+            </div>
+
             <div class="gallery-grid" style="--delay: 0.2s;">
                 <div class="gallery-item item-tall hidden anim-slide-from-left"> <img src="https://lh3.googleusercontent.com/d/1WdUubHMufgRhId4_BUltj21urHiTo6-_" alt="Galeri Foto 1" loading="lazy"> </div>
                 <div class="gallery-item hidden anim-slide-from-right"> <img src="https://lh3.googleusercontent.com/d/1zVhjZBkVRQ2Pe8chZTUW7SH-UhozMvgs" alt="Galeri Foto 2" loading="lazy"> </div>
@@ -435,7 +470,7 @@
                     <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Momen 3" loading="lazy">
                     <img src="https://lh3.googleusercontent.com/d/1WdUubHMufgRhId4_BUltj21urHiTo6-_" alt="Momen 4" loading="lazy">
                     <img src="https://lh3.googleusercontent.com/d/1zVhjZBkVRQ2Pe8chZTUW7SH-UhozMvgs" alt="Momen 5" loading="lazy">
-                    <img src="https://lh3.googleusercontent.com/d/1Zo94Rs4f_LSm8YZS0TMJuX3qYWSg6Qrn" alt="Momen 6" loading="lazy">
+                    <img src="https://drive.google.com/file/d/19SV0S_rfYXL3HBNoZnWaGhsXGfeXPlTX/view?usp=drive_link" alt="Momen 6" loading="lazy">
                 </div>
             </div>
         </section>
