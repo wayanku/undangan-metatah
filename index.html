@@ -742,7 +742,7 @@
             <h1 id="cover-title"></h1>
             <p class="date" id="cover-date"></p>
             <div class="recipient-box" id="recipient-box">
-                <p>Kepada Yth.<br><span id="guest-name">Kamu</span></p>
+                <p>Kepada Yth.<br>Bapak/Ibu/Saudara/i<br><strong id="guest-name" style="font-size: 1.1rem; color: var(--color-dark-green);"></strong></p>
             </div>
             <button id="open-invitation">BUKA UNDANGAN</button>
         </div>
@@ -1101,7 +1101,7 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const guest = urlParams.get('to');
                 if (guest) {
-                    document.getElementById('guest-name').textContent = guest;
+                    document.getElementById('guest-name').textContent = guest.replace(/\+/g, ' ');
                 }
             }
             getGuestName(); // Panggil fungsi saat halaman dimuat
