@@ -198,13 +198,13 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         }
         
         .name { 
-            font-family: var(--font-nama); font-size: clamp(2.5rem, 9vw, 3.2rem); color: var(--color-gold); margin-top: 15px; font-weight: 400;
+            font-family: var(--font-nama); font-size: clamp(2.3rem, 8.5vw, 3rem); color: var(--color-gold); margin-top: 15px; font-weight: 400;
             text-shadow: 0 2px 10px rgba(181, 154, 117, 0.3);
         }
 
         .profile-pic-container {
             position: relative;
-            height: clamp(320px, 85vw, 420px); /* [PENYESUAIAN] Ukuran diperbesar lagi */
+            height: clamp(320px, 85vw, 420px);
             margin: 20px auto; /* [PENYESUAIAN] Mengurangi margin atas dan bawah */
             /* [PENYESUAIAN] Hapus transisi karena bingkai dihilangkan */
             /* transition: transform 0.4s ease; */
@@ -218,7 +218,7 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             pointer-events: none; /* Agar tidak menghalangi interaksi dengan elemen di belakangnya */
         }
         
-        .parents { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.3rem, 5vw, 1.6rem); margin-top: 20px; line-height: 1.7; }
+        .parents { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 5vw, 1.6rem); margin-top: 10px; line-height: 1.7; }
         .quote {
             margin-top: 40px; padding: 25px; background-color: var(--color-off-white);
             border-left: 4px solid var(--color-gold); font-style: italic; text-align: left;
@@ -879,10 +879,10 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             <h2 class="hidden anim-fade-in-up">Kirim Hadiah</h2>
             <p class="hidden anim-fade-in-up" style="--delay: 0.1s;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara online.</p>
             <div class="gift-card hidden anim-zoom-in" style="--delay: 0.3s;">
-                <img src="" alt="Logo Bank" class="bank-logo" id="bank-logo">
-                <p>No. Rekening:</p>
+                <p id="bank-name"></p>
                 <h3 class="account-number" id="account-number"></h3>
                 <p id="account-name"></p>
+                <p style="margin-top: 20px;">No. Rekening:</p>
                 <button class="copy-button" id="copy-account-button">
                     <span>Salin Rekening</span>
                 </button>
@@ -999,8 +999,9 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             },
             // --- DATA PENDUKUNG ---
             gift: {
-                bankLogoUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ac/BCA_logo.svg",
-                accountNumber: "123 456 7890",
+                bankName: "Bank BNI", // Nama bank ditambahkan di sini
+                // bankLogoUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ac/BCA_logo.svg", // Properti ini tidak lagi digunakan
+                accountNumber: "1920902971",
                 accountName: "a.n. Ni Made Ayu Handayani"
             },
             quote: {
@@ -1064,7 +1065,7 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             document.getElementById('event-location').textContent = data.event.location;
             document.getElementById('event-map-link').href = data.event.mapUrl;
 
-            document.getElementById('bank-logo').src = data.gift.bankLogoUrl;
+            document.getElementById('bank-name').textContent = data.gift.bankName;
             document.getElementById('account-number').textContent = data.gift.accountNumber;
             document.getElementById('account-name').textContent = data.gift.accountName;
 
