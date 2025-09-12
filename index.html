@@ -148,7 +148,10 @@
         #open-invitation:hover { background-color: var(--color-dark-green); transform: scale(1.05); animation-play-state: paused; }
 
         /* --- KONTEN UTAMA --- */
-        #main-content { max-width: 700px; margin: 0 auto; padding: 5vh 25px; text-align: center; }
+        #main-content { 
+            display: none; /* [PERBAIKAN] Sembunyikan konten utama secara default */
+            max-width: 700px; margin: 0 auto; padding: 5vh 25px; text-align: center; 
+        }
         .section { margin-bottom: 12vh; }
         .section { position: relative; } /* Penting: Membuat section menjadi positioned parent untuk absolute children */
         #main-content p { line-height: 1.8; font-size: clamp(1.05rem, 2.5vw, 1.15rem); }
@@ -1121,6 +1124,9 @@
                 html.style.overflowY = 'auto'; // Hanya izinkan scroll vertikal
                 body.style.overflowY = 'auto'; // Hanya izinkan scroll vertikal
                 
+                // [PERBAIKAN] Tampilkan konten utama
+                mainContent.style.display = 'block';
+
                 // Gulir ke awal konten utama dengan mulus
                 mainContent.scrollIntoView({ behavior: 'smooth' });
 
