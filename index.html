@@ -1099,38 +1099,28 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             let lastScrollY = window.scrollY;
 
             // Observer #1: Memicu animasi MUNCUL saat elemen terlihat
-            const appearObserver = new IntersectionObserver((entries) => {
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    // Cek apakah elemen terlihat DAN pengguna sedang scroll ke bawah
-                    if (entry.isIntersecting && window.scrollY > lastScrollY) {
+                    const isScrollingDown = window.scrollY > lastScrollY;
+
+                    if (entry.isIntersecting) {
+                        // Selalu tambahkan .visible jika elemen terlihat
                         entry.target.classList.add('visible');
+                    } else if (!isScrollingDown) {
+                        // Hanya reset (hapus .visible) jika elemen TIDAK terlihat
+                        // DAN pengguna sedang scroll ke ATAS.
+                        entry.target.classList.remove('visible');
                     }
                 });
                 // Update posisi scroll terakhir setelah semua entri diproses
                 lastScrollY = window.scrollY;
-            }, { 
-                threshold: 0.1 // Memicu saat 10% elemen terlihat
-            });
-
-            // Observer #2: MERESET animasi (menghapus .visible) saat elemen sudah JAUH di luar layar
-            const resetObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    // [PERBAIKAN] Hanya reset elemen jika tidak terlihat DAN berada di atas viewport.
-                    // Ini mencegah konten yang baru dilewati saat scroll ke atas menjadi hilang.
-                    const isAbove = entry.boundingClientRect.y < 0;
-                    if (!entry.isIntersecting && isAbove) {
-                        entry.target.classList.remove('visible');
-                    }
-                });
             }, {
-                // Hanya deteksi elemen yang keluar dari bagian bawah layar.
-                rootMargin: '0px 0px -50% 0px'
+                threshold: 0.1
             });
 
             // Terapkan kedua observer ke semua elemen .hidden
             document.querySelectorAll('.hidden').forEach(el => {
-                appearObserver.observe(el);
-                resetObserver.observe(el);
+                observer.observe(el);
             });
         }
 
