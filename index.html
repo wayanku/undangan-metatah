@@ -716,15 +716,6 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             margin-top: 0; /* Hapus margin atas pada judul di dalam kartu */
         }
 
-        .ornament-right { 
-            top: 10vh; right: 0;
-            transform: translateX(50%) rotate(20deg); /* Animasi masuk dari kanan */
-        }
-        .ornament-left { 
-            bottom: 10vh; left: 0;
-            transform: translateX(-50%) rotate(20deg) scaleX(-1); /* Animasi masuk dari kiri */
-        }
-        
         .section.visible .ornament-image {
             opacity: 0.5;
             /* [PENYESUAIAN] Kembalikan transform ke posisi normal saat masuk */
@@ -734,8 +725,8 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
 </head>
 <body>
 
-
-    <audio id="background-music" loop>
+    <!-- [OPTIMASI] Preload musik untuk pemutaran yang lebih cepat -->
+    <audio id="background-music" loop preload="auto">
         <source src="https://f.top4top.io/m_315007dq90.mp3" type="audio/mpeg">
     </audio>
 
@@ -1061,6 +1052,180 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         };
 
         // Script untuk mengisi data ke HTML secara otomatis
+        // [PERBAIKAN] Menggabungkan semua skrip ke dalam satu blok yang terorganisir
+
+        // --- FUNGSI-FUNGSI UTAMA ---
+
+        function getGuestName() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const guest = urlParams.get('to');
+            if (guest) {
+                document.getElementById('guest-name').textContent = guest.replace(/\+/g, ' ');
+            }
+        }
+
+        function startCountdown() {
+            const countdownDate = new Date(invitationData.event.dateTime).getTime();
+            const countdownEl = document.getElementById("countdown");
+            
+            const interval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    if(countdownEl) countdownEl.innerHTML = "<h3>Acara Telah Selesai</h3>";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = days.toString().padStart(2, '0');
+                document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+                document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+                document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+            }, 1000);
+        }
+
+        function observeElements() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else {
+                        entry.target.classList.remove('visible');
+                    }
+                });
+            }, { 
+                rootMargin: '0px 0px -250px 0px',
+                threshold: 0.01
+            });
+            
+            document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
+
+            const footerObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else {
+                        entry.target.classList.remove('visible');
+                    }
+                });
+            }, { threshold: 0.01 });
+
+            document.querySelectorAll('footer.section .hidden').forEach(el => footerObserver.observe(el));
+        }
+
+        function setupSliderObserver() {
+            const sliderTrack = document.querySelector('#momen .slider-track');
+            if (!sliderTrack) return;
+
+            const sliderItems = sliderTrack.querySelectorAll('img');
+            if (sliderItems.length === 0) return;
+
+            const observerOptions = {
+                root: document.querySelector('#momen .slider-container'),
+                rootMargin: '0px',
+                threshold: 0.5
+            };
+
+            const sliderObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        sliderItems.forEach(item => item.classList.remove('is-active'));
+                        entry.target.classList.add('is-active');
+                    }
+                });
+            }, observerOptions);
+
+            sliderItems.forEach(item => sliderObserver.observe(item));
+        }
+
+        function setupMomentsSlider() {
+            const container = document.querySelector('#momen .slider-container');
+            const track = document.getElementById('moments-slider');
+            const prevButton = document.querySelector('#momen .slider-nav.prev');
+            const nextButton = document.querySelector('#momen .slider-nav.next');
+            if (!container || !track || !prevButton || !nextButton) return;
+
+            let autoScrollInterval;
+
+            const scrollNext = () => {
+                const scrollAmount = container.clientWidth * 0.75;
+                if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+                    container.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            };
+
+            const startAutoScroll = () => {
+                stopAutoScroll();
+                autoScrollInterval = setInterval(scrollNext, 4000);
+            };
+
+            const stopAutoScroll = () => {
+                clearInterval(autoScrollInterval);
+            };
+
+            nextButton.addEventListener('click', scrollNext);
+            prevButton.addEventListener('click', () => {
+                const scrollAmount = container.clientWidth * 0.75;
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+
+            container.addEventListener('mouseenter', stopAutoScroll);
+            container.addEventListener('mouseleave', startAutoScroll);
+            startAutoScroll();
+        }
+
+        async function loadWishes() {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbz2_Ll9pbZ7t0zGykTfwL_aKYHiCknnpNVeVHosnNs9iSCj6M2-N9T2heuXgK14cTs/exec';
+            const wishesContainer = document.getElementById('wishes-gallery');
+            const noWishesMessage = document.getElementById('no-wishes-message');
+            const galleryContainer = document.getElementById('wishes-gallery-container');
+            
+            try {
+                const response = await fetch(scriptURL);
+                const result = await response.json();
+
+                galleryContainer.style.display = 'block';
+
+                if (result.result === 'success' && result.data.length > 0) {
+                    wishesContainer.style.display = 'block';
+                    noWishesMessage.style.display = 'none';
+                    wishesContainer.innerHTML = '';
+
+                    result.data.forEach((wish, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'wish-card';
+                        card.style.animationDelay = `${index * 0.1}s`;
+
+                        const sender = document.createElement('span');
+                        sender.className = 'sender-name';
+                        sender.textContent = wish.nama;
+
+                        const message = document.createElement('p');
+                        message.textContent = `"${wish.ucapan}"`;
+
+                        card.appendChild(sender);
+                        card.appendChild(message);
+                        wishesContainer.appendChild(card);
+                    });
+                } else {
+                    wishesContainer.style.display = 'none';
+                    noWishesMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error fetching wishes!', error.message);
+            }
+        }
+
+        // --- EKSEKUSI SAAT HALAMAN DIMUAT ---
+
         document.addEventListener('DOMContentLoaded', function() {
             const data = invitationData;
 
@@ -1101,15 +1266,9 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             document.querySelectorAll('.slide').forEach((slide, index) => {
                 slide.style.backgroundImage = `url('${data.images.coverSlides[index]}')`;
             });
-            const momentsContainer = document.getElementById('moments-slider');
-            data.images.moments.forEach(url => {
-                momentsContainer.innerHTML += `<img src="${url}" alt="Momen" loading="lazy">`;
-            });
-        });
-    </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+            // --- MENGATUR EVENT LISTENERS DAN FUNGSI LAINNYA ---
+
             const openButton = document.getElementById('open-invitation');
             const html = document.documentElement;
             const cover = document.getElementById('cover');
@@ -1118,39 +1277,25 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             const musicToggle = document.getElementById('music-toggle');
             const mainContent = document.getElementById('main-content');
 
-            // [KREASI BARU] Fungsi untuk mengambil nama tamu dari URL
-            function getGuestName() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const guest = urlParams.get('to');
-                if (guest) {
-                    document.getElementById('guest-name').textContent = guest.replace(/\+/g, ' ');
-                }
-            }
-            getGuestName(); // Panggil fungsi saat halaman dimuat
+            getGuestName();
 
-            // [SOLUSI FINAL] Matikan fitur scroll restoration otomatis browser.
             if ('scrollRestoration' in history) {
                 history.scrollRestoration = 'manual';
             }
-            // Secara manual paksa scroll ke paling atas saat halaman dimuat.
-                window.scrollTo(0, 0);
-
-            observeElements();
+            window.scrollTo(0, 0);
 
             openButton.addEventListener('click', function() {
                 cover.classList.add('opened');
-                // Buka kunci scroll pada html dan body
-                html.style.overflowY = 'auto'; // Hanya izinkan scroll vertikal
-                body.style.overflowY = 'auto'; // Hanya izinkan scroll vertikal
-                
-                // [PERBAIKAN] Tampilkan konten utama
+                html.style.overflowY = 'auto';
+                body.style.overflowY = 'auto';
                 mainContent.style.display = 'block';
-
-                // Gulir ke awal konten utama dengan mulus
                 mainContent.scrollIntoView({ behavior: 'smooth' });
 
                 music.play().catch(error => console.log("Autoplay dicegah oleh browser."));
                 musicToggle.classList.add('show', 'playing');
+
+                // [OPTIMASI] Panggil observer setelah halaman dibuka
+                observeElements();
             });
 
             musicToggle.addEventListener('click', function() {
@@ -1161,144 +1306,12 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 }
             });
 
-            // Fungsi untuk hitung mundur
-            function startCountdown() {
-                const countdownDate = new Date(invitationData.event.dateTime).getTime();
-                const countdownEl = document.getElementById("countdown");
-                
-                const interval = setInterval(function() {
-                    const now = new Date().getTime();
-                    const distance = countdownDate - now;
-
-                    if (distance < 0) {
-                        clearInterval(interval);
-                        if(countdownEl) countdownEl.innerHTML = "<h3>Acara Telah Selesai</h3>";
-                        return;
-                    }
-
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                    document.getElementById("days").innerText = days.toString().padStart(2, '0');
-                    document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
-                    document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
-                    document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
-                }, 1000);
-            }
-            startCountdown();
-
-            function observeElements() {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                        } else {
-                            // Hapus kelas 'visible' saat elemen keluar dari viewport
-                            // agar animasi bisa diputar lagi saat scroll kembali.
-                            entry.target.classList.remove('visible');
-                        }
-                    });
-                }, { 
-                    rootMargin: '0px 0px -250px 0px', // Memicu animasi keluar 250px sebelum elemen hilang dari bawah layar.
-                    threshold: 0.01 // Memicu animasi masuk segera setelah elemen sedikit terlihat.
-                });
-                
-                document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
-
-                const footerObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                        } else {
-                            entry.target.classList.remove('visible');
-                        }
-                    });
-                }, { threshold: 0.01 }); // Footer menggunakan threshold standar tanpa rootMargin negatif.
-
-                document.querySelectorAll('footer.section .hidden').forEach(el => footerObserver.observe(el));
-            }
-
-            // [KREASI BARU] Script untuk slider "Momen Spesial" dengan efek cover flow
-            function setupSliderObserver() {
-                const sliderTrack = document.querySelector('#momen .slider-track');
-                if (!sliderTrack) return;
-
-                const sliderItems = sliderTrack.querySelectorAll('img');
-
-                const observerOptions = {
-                    root: document.querySelector('#momen .slider-container'),
-                    rootMargin: '0px',
-                    threshold: 0.5 // Memicu saat 50% item terlihat
-                };
-
-                const sliderObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            // Hapus kelas aktif dari semua item dulu
-                            sliderItems.forEach(item => item.classList.remove('is-active'));
-                            // Tambahkan kelas aktif ke item yang sedang di tengah
-                            entry.target.classList.add('is-active');
-                        }
-                    });
-                }, observerOptions);
-
-                sliderItems.forEach(item => sliderObserver.observe(item));
-            }
-            setupSliderObserver();
-
-            // [PERBAIKAN] Script untuk slider otomatis dan manual
-            function setupMomentsSlider() {
-                const container = document.querySelector('#momen .slider-container');
-                const track = document.getElementById('moments-slider');
-                const prevButton = document.querySelector('#momen .slider-nav.prev');
-                const nextButton = document.querySelector('#momen .slider-nav.next');
-                if (!container || !track || !prevButton || !nextButton) return;
-
-                let autoScrollInterval;
-
-                const scrollNext = () => {
-                    const scrollAmount = container.clientWidth * 0.75; // Sesuaikan dengan lebar item
-                    // Jika sudah di akhir, kembali ke awal
-                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-                        container.scrollTo({ left: 0, behavior: 'smooth' });
-                    } else {
-                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                    }
-                };
-
-                const startAutoScroll = () => {
-                    stopAutoScroll(); // Hentikan dulu jika sudah ada
-                    autoScrollInterval = setInterval(scrollNext, 4000); // Ganti gambar setiap 4 detik
-                };
-
-                const stopAutoScroll = () => {
-                    clearInterval(autoScrollInterval);
-                };
-
-                nextButton.addEventListener('click', scrollNext);
-                prevButton.addEventListener('click', () => {
-                    const scrollAmount = container.clientWidth * 0.75;
-                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                });
-
-                container.addEventListener('mouseenter', stopAutoScroll);
-                container.addEventListener('mouseleave', startAutoScroll);
-                startAutoScroll(); // Mulai autoplay saat halaman dimuat
-            }
-            setupMomentsSlider();
-
-            // --- GIFT CARD SCRIPT ---
             const copyButton = document.getElementById('copy-account-button');
-            const accountNumber = invitationData.gift.accountNumber;
-
             copyButton.addEventListener('click', function() {
-                navigator.clipboard.writeText(accountNumber.replace(/\s/g, '')).then(() => {
-                    // Berhasil disalin
+                navigator.clipboard.writeText(data.gift.accountNumber.replace(/\s/g, '')).then(() => {
                     const originalText = this.innerHTML;
                     this.innerHTML = '<span>Berhasil Disalin!</span>';
-                    this.style.backgroundColor = '#c8e6c9'; // Warna hijau muda
+                    this.style.backgroundColor = '#c8e6c9';
                     setTimeout(() => {
                         this.innerHTML = originalText;
                         this.style.backgroundColor = '';
@@ -1306,48 +1319,40 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 }).catch(err => console.error('Gagal menyalin: ', err));
             });
 
-            // --- RSVP FORM SCRIPT ---
             const rsvpForm = document.getElementById('rsvp-form');
             const kehadiranOptions = document.querySelectorAll('input[name="kehadiran"]');
             const jumlahTamuGroup = document.getElementById('jumlah-tamu-group');
-            const formStatus = document.getElementById('form-status');
-
+            
             kehadiranOptions.forEach(option => {
                 option.addEventListener('change', function() {
-                    if (this.value === 'Hadir') {
-                        jumlahTamuGroup.style.display = 'block';
-                    } else {
-                        jumlahTamuGroup.style.display = 'none';
-                    }
+                    jumlahTamuGroup.style.display = (this.value === 'Hadir') ? 'block' : 'none';
                 });
             });
 
             rsvpForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbz2_Ll9pbZ7t0zGykTfwL_aKYHiCknnpNVeVHosnNs9iSCj6M2-N9T2heuXgK14cTs/exec'; // <-- INI URL ANDA
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbz2_Ll9pbZ7t0zGykTfwL_aKYHiCknnpNVeVHosnNs9iSCj6M2-N9T2heuXgK14cTs/exec';
                 const formButton = this.querySelector('.rsvp-button');
                 const buttonText = formButton.querySelector('span');
-                const buttonIcon = formButton.querySelector('.icon-send');
+                const formStatus = document.getElementById('form-status');
 
                 formButton.disabled = true;
                 buttonText.textContent = 'Mengirim...';
-                if(buttonIcon) buttonIcon.style.display = 'none'; // Sembunyikan ikon saat mengirim
                 formStatus.textContent = '';
 
                 try {
-                    const response = await fetch(scriptURL, { method: 'POST', body: new FormData(this) });
-                    const data = await response.json();
+                    const response = await fetch(scriptURL, { method: 'POST', body: new FormData(this)});
+                    const result = await response.json();
 
-                    if (data.result === 'success') {
-                        console.log('Success!', data);
+                    if (result.result === 'success') {
+                        console.log('Success!', result);
                         formStatus.textContent = 'Terima kasih, konfirmasi Anda telah terkirim!';
                         formStatus.style.color = 'var(--color-green)';
                         rsvpForm.reset();
                         jumlahTamuGroup.style.display = 'none';
-                        // Panggil loadWishes() lagi untuk memuat ulang galeri secara dinamis
-                        await loadWishes(); // Gunakan await di sini juga
+                        await loadWishes();
                     } else {
-                        throw new Error(data.message || 'Terjadi kesalahan saat mengirim data.');
+                        throw new Error(result.message || 'Terjadi kesalahan saat mengirim data.');
                     }
                 } catch (error) {
                     console.error('Error!', error.message);
@@ -1356,59 +1361,21 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 } finally {
                     formButton.disabled = false;
                     buttonText.textContent = 'Kirim Konfirmasi';
-                    if (buttonIcon) buttonIcon.style.display = 'inline-block'; // Tampilkan kembali ikon
                 }
             });
 
-            // --- WISHES GALLERY SCRIPT ---
-            async function loadWishes() {
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbz2_Ll9pbZ7t0zGykTfwL_aKYHiCknnpNVeVHosnNs9iSCj6M2-N9T2heuXgK14cTs/exec'; // <-- INI URL ANDA
-                const wishesContainer = document.getElementById('wishes-gallery');
-                const noWishesMessage = document.getElementById('no-wishes-message');
-                const galleryContainer = document.getElementById('wishes-gallery-container');
-                
-                try {
-                    const response = await fetch(scriptURL);
-                    const result = await response.json();
-
-                    // Selalu tampilkan kontainer galeri
-                    galleryContainer.style.display = 'block';
-
-                    if (result.result === 'success' && result.data.length > 0) {
-                        wishesContainer.style.display = 'block';
-                        noWishesMessage.style.display = 'none';
-
-                        wishesContainer.innerHTML = ''; // Kosongkan dulu
-
-                        result.data.forEach((wish, index) => {
-                            const card = document.createElement('div');
-                            card.className = 'wish-card';
-                            // Tambahkan delay animasi agar muncul satu per satu
-                            card.style.animationDelay = `${index * 0.1}s`;
-
-                            const sender = document.createElement('span');
-                            sender.className = 'sender-name';
-                            sender.textContent = wish.nama;
-
-                            const message = document.createElement('p');
-                            message.textContent = `"${wish.ucapan}"`; // [PENYESUAIAN] Menambahkan tanda kutip
-
-                            card.appendChild(sender);
-                            card.appendChild(message);
-                            wishesContainer.appendChild(card);
-                        });
-                    } else {
-                        // Jika tidak ada ucapan, tampilkan pesan
-                        wishesContainer.style.display = 'none';
-                        noWishesMessage.style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error('Error fetching wishes!', error.message);
-                }
+            // [OPTIMASI] Pindahkan pengisian slider momen ke sini agar lebih terpusat
+            const momentsContainer = document.getElementById('moments-slider');
+            if (momentsContainer) {
+                const momentsHTML = data.images.moments.map(url => `<img src="${url}" alt="Momen" loading="lazy">`).join('');
+                momentsContainer.innerHTML = momentsHTML;
             }
-            loadWishes(); // Panggil fungsi saat halaman dimuat
+            // Panggil fungsi-fungsi yang perlu berjalan saat halaman dimuat
+            startCountdown();
+            setupMomentsSlider();
+            setupSliderObserver();
+            loadWishes();
         });
     </script>
-
 </body>
 </html>
