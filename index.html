@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -715,23 +716,6 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             margin-top: 0; /* Hapus margin atas pada judul di dalam kartu */
         }
 
-        /* [KREASI] CSS untuk Ornamen Hiasan */
-        .ornament-container {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            overflow: hidden; /* Penting untuk menyembunyikan sebagian ornamen */
-            pointer-events: none;
-        }
-        .ornament-image {
-            position: absolute;
-            z-index: -1; /* Pindahkan ke belakang konten section */
-            width: clamp(100px, 25vw, 180px); /* Sedikit diperkecil agar tidak terlalu dominan */
-            opacity: 0.5; /* Buat sedikit transparan agar tidak terlalu menonjol */
-            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease;
-            /* [PENYESUAIAN] Atur transform awal (saat .hidden) */
-            opacity: 0;
-        }
         .ornament-right { 
             top: 10vh; right: 0;
             transform: translateX(50%) rotate(20deg); /* Animasi masuk dari kanan */
@@ -741,7 +725,7 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             transform: translateX(-50%) rotate(20deg) scaleX(-1); /* Animasi masuk dari kiri */
         }
         
-        .visible .ornament-image {
+        .section.visible .ornament-image {
             opacity: 0.5;
             /* [PENYESUAIAN] Kembalikan transform ke posisi normal saat masuk */
             transform: translateX(0) scaleX(var(--scale, 1)); 
@@ -756,8 +740,8 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
     </audio>
 
     <div id="music-toggle">
-        <svg class="icon icon-play" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        <svg class="icon icon-pause" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+        <svg class="icon icon-play" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <svg class="icon icon-pause" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
     </div>
 
     <!-- Menggunakan tag <header> untuk cover depan -->
@@ -800,12 +784,14 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         
         <div class="divider hidden anim-zoom-in"></div>
 
-        <section id="kutipan" class="section">
-            <!-- [PERBAIKAN] Ornamen kanan dipindahkan ke sini -->
-            <div class="ornament-container hidden anim-fade-in-up" style="--delay: 0.2s;"><img src="" alt="Hiasan" class="ornament-image ornament-right" style="--scale: 1;" id="ornament-right-1"></div>
+        <section id="kutipan" class="section hidden anim-fade-in-up">
+            <!-- [PERBAIKAN STRUKTUR] Ornamen ditempatkan di dalam section yang relevan -->
+            <div class="ornament-container">
+                <img src="" alt="Hiasan" class="ornament-image ornament-right" style="--scale: 1;">
+            </div>
             <div class="quote" id="quote-block">
                 <p class="hidden anim-fade-in-up" id="quote-text"></p>
-                <span class="hidden anim-fade-in-up quote-source" style="--delay: 0.2s;" id="quote-source"></span>
+                <span class="hidden anim-fade-in-up quote-source" style="--delay: 0.2s;" id="quote-source"></span> 
                 <p class="hidden anim-fade-in-up quote-translation" style="--delay: 0.4s;" id="quote-translation"></p>
             </div>
         </section>
@@ -837,7 +823,11 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         </section>
 
         <!-- [PEMINDAHAN] Teks penutup sekarang menjadi section tersendiri -->
-        <section id="penutup" class="section">
+        <section id="penutup" class="section hidden anim-fade-in-up">
+            <!-- [PERBAIKAN STRUKTUR] Ornamen ditempatkan di dalam section yang relevan -->
+            <div class="ornament-container">
+                <img src="" alt="Hiasan" class="ornament-image ornament-left" style="--scale: -1; bottom: 30vh;" id="ornament-left-2">
+            </div>
             <p>
                 <span class="line-wrapper hidden anim-fade-in-up" style="--delay: 0.1s;">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i, berkenan hadir untuk memberikan doa restu.</span>
                 <span class="line-wrapper hidden anim-fade-in-up" style="--delay: 0.2s;">Atas kehadiran dan doa restunya, kami ucapkan terima kasih.</span>
@@ -925,15 +915,17 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                     <input type="text" id="nama" name="nama" placeholder="Tuliskan nama Anda" required>
                 </div>
                 <div class="form-group">
-                    <label for="kehadiran">Konfirmasi Kehadiran</label>
-                    <!-- [KREASI] Mengganti <select> dengan radio button yang lebih modern -->
-                    <div class="kehadiran-options">
-                        <input type="radio" id="hadir" name="kehadiran" value="Hadir" required>
-                        <label for="hadir">Hadir</label>
+                    <fieldset style="border: none; padding: 0; margin: 0;">
+                        <legend style="padding: 0; margin-bottom: 8px; font-weight: 600; color: var(--color-dark-green);">Konfirmasi Kehadiran</legend>
+                        <!-- [KREASI] Mengganti <select> dengan radio button yang lebih modern -->
+                        <div class="kehadiran-options">
+                            <input type="radio" id="hadir" name="kehadiran" value="Hadir" required>
+                            <label for="hadir">Hadir</label>
 
-                        <input type="radio" id="tidak-hadir" name="kehadiran" value="Tidak Hadir">
-                        <label for="tidak-hadir">Tidak Hadir</label>
-                    </div>
+                            <input type="radio" id="tidak-hadir" name="kehadiran" value="Tidak Hadir">
+                            <label for="tidak-hadir">Tidak Hadir</label>
+                        </div>
+                    </fieldset>
                 </div>
                 <div class="form-group" id="jumlah-tamu-group" style="display: none;">
                     <label for="jumlah">Jumlah Tamu (termasuk Anda)</label>
@@ -984,19 +976,6 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             </div>
         </footer>
 
-        <!-- [PERBAIKAN] Ornamen dipindahkan ke sini, di dalam <main> agar tidak terpotong -->
-        <div class="ornament-container hidden anim-fade-in-up" style="--delay: 0.3s;">
-            <img src="" alt="Hiasan" class="ornament-image ornament-left" id="ornament-left-1">
-        </div> 
-        <div class="ornament-container hidden anim-fade-in-up" style="--delay: 0.2s;">
-            <img src="" alt="Hiasan" class="ornament-image ornament-right" style="--scale: 1;" id="ornament-right-1">
-        </div>
-        <div class="ornament-container hidden anim-fade-in-up" style="--delay: 0.1s;">
-            <img src="" alt="Hiasan" class="ornament-image ornament-left" style="--scale: -1; bottom: 30vh;" id="ornament-left-2">
-        </div>
-
-        <!-- [PERBAIKAN] Ornamen kiri pertama dipindahkan ke sini (di dalam section keluarga) -->
-        <div class="ornament-container hidden anim-fade-in-up" style="--delay: 0.3s;"><img src="" alt="Hiasan" class="ornament-image ornament-left" id="ornament-left-1"></div> 
     </main>
 
     <!-- =============================================================================== -->
@@ -1216,18 +1195,18 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                         if (entry.isIntersecting) {
                             entry.target.classList.add('visible');
                         } else {
-                            // Hapus 'visible' saat keluar viewport agar animasi bisa diputar lagi saat scroll kembali
+                            // Hapus kelas 'visible' saat elemen keluar dari viewport
+                            // agar animasi bisa diputar lagi saat scroll kembali.
                             entry.target.classList.remove('visible');
                         }
                     });
                 }, { 
-                    rootMargin: '0px 0px -250px 0px', // Memicu animasi keluar lebih awal (jarak lebih jauh)
-                    threshold: 0.01 
-                }); 
+                    rootMargin: '0px 0px -250px 0px', // Memicu animasi keluar 250px sebelum elemen hilang dari bawah layar.
+                    threshold: 0.01 // Memicu animasi masuk segera setelah elemen sedikit terlihat.
+                });
                 
                 document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
 
-                // [PERBAIKAN] Observer khusus untuk footer agar tidak terpotong oleh rootMargin
                 const footerObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
@@ -1236,7 +1215,7 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                             entry.target.classList.remove('visible');
                         }
                     });
-                }, { threshold: 0.01 }); // Tanpa rootMargin negatif
+                }, { threshold: 0.01 }); // Footer menggunakan threshold standar tanpa rootMargin negatif.
 
                 document.querySelectorAll('footer.section .hidden').forEach(el => footerObserver.observe(el));
             }
