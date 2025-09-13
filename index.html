@@ -1095,14 +1095,19 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         }
 
         function observeElements() {
-         
-           // Observer #1: Memicu animasi MUNCUL saat elemen terlihat
+            // [PERBAIKAN] Lacak posisi scroll terakhir untuk mendeteksi arah scroll
+            let lastScrollY = window.scrollY;
+
+            // Observer #1: Memicu animasi MUNCUL saat elemen terlihat
             const appearObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
+                    // Cek apakah elemen terlihat DAN pengguna sedang scroll ke bawah
+                    if (entry.isIntersecting && window.scrollY > lastScrollY) {
                         entry.target.classList.add('visible');
                     }
                 });
+                // Update posisi scroll terakhir setelah semua entri diproses
+                lastScrollY = window.scrollY;
             }, { 
                 threshold: 0.1 // Memicu saat 10% elemen terlihat
             });
@@ -1180,7 +1185,6 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 const scrollAmount = container.clientWidth * 0.75;
                 container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
             });
-
         }
 
         async function loadWishes() {
