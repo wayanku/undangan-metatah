@@ -1115,14 +1115,16 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             // Observer #2: MERESET animasi (menghapus .visible) saat elemen sudah JAUH di luar layar
             const resetObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    // Jika elemen TIDAK berada dalam area deteksi yang besar ini, reset animasinya.
-                    if (!entry.isIntersecting) {
+                    // [PERBAIKAN] Hanya reset elemen jika tidak terlihat DAN berada di atas viewport.
+                    // Ini mencegah konten yang baru dilewati saat scroll ke atas menjadi hilang.
+                    const isAbove = entry.boundingClientRect.y < 0;
+                    if (!entry.isIntersecting && isAbove) {
                         entry.target.classList.remove('visible');
                     }
                 });
             }, {
-                // Area deteksi yang sangat besar. Elemen akan di-reset hanya jika berada di luar area ini.
-                rootMargin: '1000px 0px 1000px 0px'
+                // Hanya deteksi elemen yang keluar dari bagian bawah layar.
+                rootMargin: '0px 0px -50% 0px'
             });
 
             // Terapkan kedua observer ke semua elemen .hidden
