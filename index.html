@@ -1170,12 +1170,8 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 }
             };
 
-            const startAutoScroll = () => {
-                stopAutoScroll();
-                autoScrollInterval = setInterval(scrollNext, 4000);
-            };
-
             const stopAutoScroll = () => {
+                // Fungsi ini tetap ada untuk menghentikan interval jika diperlukan di masa depan
                 clearInterval(autoScrollInterval);
             };
 
@@ -1185,9 +1181,6 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
             });
 
-            container.addEventListener('mouseenter', stopAutoScroll);
-            container.addEventListener('mouseleave', startAutoScroll);
-            startAutoScroll();
         }
 
         async function loadWishes() {
