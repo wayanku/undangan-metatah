@@ -1056,6 +1056,10 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
 
         // --- FUNGSI-FUNGSI UTAMA ---
 
+        // [PERBAIKAN] Variabel observer tidak perlu global lagi
+        // let mainObserver;
+        // let footerObserver;
+
         function getGuestName() {
             const urlParams = new URLSearchParams(window.location.search);
             const guest = urlParams.get('to');
@@ -1091,7 +1095,7 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         }
 
         function observeElements() {
-            const observer = new IntersectionObserver((entries) => {
+            const mainObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
@@ -1104,7 +1108,7 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 threshold: 0.01
             });
             
-            document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
+            document.querySelectorAll('#main-content .hidden').forEach(el => mainObserver.observe(el));
 
             const footerObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
