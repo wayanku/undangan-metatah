@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -1056,10 +1057,6 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
 
         // --- FUNGSI-FUNGSI UTAMA ---
 
-        // [PERBAIKAN] Variabel observer tidak perlu global lagi
-        // let mainObserver;
-        // let footerObserver;
-
         function getGuestName() {
             const urlParams = new URLSearchParams(window.location.search);
             const guest = urlParams.get('to');
@@ -1095,33 +1092,32 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         }
 
         function observeElements() {
-            // [PERBAIKAN] Lacak posisi scroll terakhir untuk mendeteksi arah scroll
-            let lastScrollY = window.scrollY;
-
-            // Observer #1: Memicu animasi MUNCUL saat elemen terlihat
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    const isScrollingDown = window.scrollY > lastScrollY;
-
                     if (entry.isIntersecting) {
-                        // Selalu tambahkan .visible jika elemen terlihat
                         entry.target.classList.add('visible');
-                    } else if (!isScrollingDown) {
-                        // Hanya reset (hapus .visible) jika elemen TIDAK terlihat
-                        // DAN pengguna sedang scroll ke ATAS.
+                    } else {
                         entry.target.classList.remove('visible');
                     }
                 });
-                // Update posisi scroll terakhir setelah semua entri diproses
-                lastScrollY = window.scrollY;
-            }, {
-                threshold: 0.1
+            }, { 
+                rootMargin: '0px 0px -250px 0px',
+                threshold: 0.01
             });
+            
+            document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
 
-            // Terapkan kedua observer ke semua elemen .hidden
-            document.querySelectorAll('.hidden').forEach(el => {
-                observer.observe(el);
-            });
+            const footerObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else {
+                        entry.target.classList.remove('visible');
+                    }
+                });
+            }, { threshold: 0.01 });
+
+            document.querySelectorAll('footer.section .hidden').forEach(el => footerObserver.observe(el));
         }
 
         function setupSliderObserver() {
@@ -1155,11 +1151,10 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             const prevButton = document.querySelector('#momen .slider-nav.prev');
             const nextButton = document.querySelector('#momen .slider-nav.next');
             if (!container || !track || !prevButton || !nextButton) return;
-
-            let autoScrollInterval;
-
+ 
             const scrollNext = () => {
                 const scrollAmount = container.clientWidth * 0.75;
+                // Jika sudah di akhir, kembali ke awal. Jika tidak, geser ke slide berikutnya.
                 if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
                     container.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
@@ -1167,15 +1162,16 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 }
             };
 
-            const stopAutoScroll = () => {
-                // Fungsi ini tetap ada untuk menghentikan interval jika diperlukan di masa depan
-                clearInterval(autoScrollInterval);
-            };
-
             nextButton.addEventListener('click', scrollNext);
+            
             prevButton.addEventListener('click', () => {
                 const scrollAmount = container.clientWidth * 0.75;
-                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                // Jika sudah di awal, geser ke slide terakhir. Jika tidak, geser ke slide sebelumnya.
+                if (container.scrollLeft <= 0) {
+                    container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+                } else {
+                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                }
             });
         }
 
