@@ -345,49 +345,31 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         .item-tall { grid-row: span 2; }
         .item-wide { grid-column: span 2; }
 
-        /* [PERBAIKAN] Penyesuaian untuk Slider Momen */
-        #momen .section-content {
-            position: relative; /* Diperlukan untuk posisi absolut tombol navigasi */
+        /* [PEROMBAKAN] Desain baru untuk Slider Momen - Tumpukan Kartu 3D */
+        .moments-card-stack {
+            position: relative;
+            width: 100%;
+            height: 500px; /* [PENYESUAIAN] Membuat kontainer sedikit lebih tinggi */
+            margin-top: 2rem;
+            perspective: 1000px;
         }
-        .slider-nav {
+        .moments-card-stack .card {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.7);
-            border: none; border-radius: 50%; width: 40px; height: 40px;
-            cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: background-color 0.3s, transform 0.2s;
+            width: 80%;
+            height: 90%;
+            left: 10%;
+            top: 5%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            will-change: transform, opacity;
         }
-        .slider-nav:hover { background-color: white; transform: translateY(-50%) scale(1.1); }
-        .slider-nav.prev { left: -15px; } .slider-nav.next { right: -15px; }
-        .slider-container {
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            padding: 20px 0; /* Tambahkan padding untuk ruang efek scale */
-            -ms-overflow-style: none; scrollbar-width: none;
-            scroll-snap-type: x mandatory;
-            perspective: 500px; /* [KREASI BARU] Menambahkan perspektif 3D */
-        }
-        .slider-container::-webkit-scrollbar { display: none; }
-        .slider-track { display: flex; gap: 10px; }
-        .slider-track img { /* Gambar di slider momen */
-            width: 70%; flex-shrink: 0; border-radius: 10px; /* Gambar di slider momen */
+        .moments-card-stack .card img {
+            width: 100%;
+            height: 100%;
             aspect-ratio: 4 / 5; object-fit: cover;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            scroll-snap-align: center;
-            /* [KREASI BARU] Efek untuk item yang tidak aktif */
-            transform: scale(0.8);
-            opacity: 0.6;
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
-        }
-        /* [KREASI BARU] Efek untuk item yang aktif (di tengah) */
-        .slider-track img.is-active {
-            transform: scale(1);
-            opacity: 1;
-        }
-        @media (max-width: 600px) {
-            .slider-track img { width: 80%; }
-            .slider-nav { width: 35px; height: 35px; }
         }
 
         .video-container {
@@ -872,16 +854,14 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
         
         <section id="momen" class="section">
             <h2 class="hidden anim-fade-in-up">Momen Spesial</h2>
-            <!-- [PERBAIKAN] Menambahkan wrapper dan tombol navigasi -->
-            <div class="section-content hidden anim-zoom-in">
-                <div class="slider-container">
-                    <div class="slider-track" id="moments-slider">
-                        <!-- Diisi oleh JS -->
-                    </div>
-                </div>
-                <button class="slider-nav prev" aria-label="Previous slide">&lt;</button>
-                <button class="slider-nav next" aria-label="Next slide">&gt;</button>
+            <!-- [PEROMBAKAN] Slider momen dengan tumpukan kartu 3D -->
+            <div class="moments-card-stack hidden anim-zoom-in" id="moments-slider">
+                <!-- Diisi oleh JS -->
             </div>
+            <!-- [PENAMBAHAN] Teks di bawah slider momen -->
+            <p class="hidden anim-fade-in-up" style="font-size: 0.9rem; color: #888; margin-top: 1.5rem; --delay: 0.2s;">
+                Klik kartu untuk melihat foto lainnya
+            </p>
         </section>
 
         <section id="video" class="section hidden anim-zoom-in">
@@ -1120,69 +1100,51 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
         }
 
-        function setupSliderObserver() {
-            const sliderTrack = document.querySelector('#momen .slider-track');
-            if (!sliderTrack) return;
+        // [PEROMBAKAN] Fungsi baru untuk slider tumpukan kartu 3D
+        function setupCardStackSlider() {
+            const stack = document.getElementById('moments-slider');
+            if (!stack) return;
 
-            const sliderItems = sliderTrack.querySelectorAll('img');
-            if (sliderItems.length === 0) return;
+            let cards = Array.from(stack.children);
+            if (cards.length === 0) return;
 
-            const observerOptions = {
-                root: document.querySelector('#momen .slider-container'),
-                rootMargin: '0px',
-                threshold: 0.5
-            };
+            const updateStack = () => {
+                cards.forEach((card, index) => {
+                    const depth = cards.length - 1 - index;
+                    const scale = 1 - (depth * 0.05);
+                    const translateY = -depth * 10;
+                    const translateZ = -depth * 50;
+                    const opacity = (depth < 3) ? 1 : 0; // Hanya tampilkan 3 kartu teratas
 
-            const sliderObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        sliderItems.forEach(item => item.classList.remove('is-active'));
-                        entry.target.classList.add('is-active');
-                    }
+                    card.style.transform = `scale(${scale}) translateY(${translateY}px) translateZ(${translateZ}px)`;
+                    card.style.zIndex = index;
+                    card.style.opacity = opacity;
                 });
-            }, observerOptions);
-
-            sliderItems.forEach(item => sliderObserver.observe(item));
-        }
-
-        function setupMomentsSlider() {
-            const container = document.querySelector('#momen .slider-container');
-            const track = document.getElementById('moments-slider');
-            const prevButton = document.querySelector('#momen .slider-nav.prev');
-            const nextButton = document.querySelector('#momen .slider-nav.next');
-            if (!container || !track || !prevButton || !nextButton) return;
- 
-            let isScrolling = false;
-            const scrollCooldown = 300; // Waktu jeda dalam milidetik (0.3 detik)
-
-            const handleScroll = (direction) => {
-                if (isScrolling) return; // Abaikan klik jika sedang dalam masa jeda
-                isScrolling = true;
-
-                const scrollAmount = container.clientWidth * 0.75; // Jarak geser
-
-                if (direction === 'next') {
-                    // Jika sudah di akhir, kembali ke awal. Jika tidak, geser ke slide berikutnya.
-                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-                        container.scrollTo({ left: 0, behavior: 'smooth' });
-                    } else {
-                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                    }
-                } else if (direction === 'prev') {
-                    // Jika sudah di awal, geser ke slide terakhir. Jika tidak, geser ke slide sebelumnya.
-                    if (container.scrollLeft <= 0) {
-                        container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
-                    } else {
-                        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                    }
-                }
-
-                // Atur ulang status setelah masa jeda selesai
-                setTimeout(() => { isScrolling = false; }, scrollCooldown);
             };
 
-            nextButton.addEventListener('click', () => handleScroll('next'));
-            prevButton.addEventListener('click', () => handleScroll('prev'));
+            let clickCount = 0; // [PENAMBAHAN] Variabel untuk menghitung klik
+
+            const cycleCards = () => {
+                const topCard = cards.pop(); // Ambil kartu paling atas
+
+                // [PERUBAHAN] Animasi keluar bergantian ke kiri dan kanan
+                if (clickCount % 2 === 0) {
+                    topCard.style.transform = `translateX(150%) rotate(15deg)`; // Keluar ke kanan
+                } else {
+                    topCard.style.transform = `translateX(-150%) rotate(-15deg)`; // Keluar ke kiri
+                }
+                clickCount++; // Tambah hitungan klik
+                
+                setTimeout(() => {
+                    cards.unshift(topCard); // Pindahkan ke paling bawah
+                    topCard.style.transition = 'none'; // Hapus transisi sementara
+                    updateStack(); // Perbarui tumpukan
+                    setTimeout(() => topCard.style.transition = '', 50); // Kembalikan transisi
+                }, 500);
+            };
+
+            stack.addEventListener('click', cycleCards);
+            updateStack(); // Inisialisasi posisi kartu
         }
 
         async function loadWishes() {
@@ -1370,13 +1332,14 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             // [OPTIMASI] Pindahkan pengisian slider momen ke sini agar lebih terpusat
             const momentsContainer = document.getElementById('moments-slider');
             if (momentsContainer) {
-                const momentsHTML = data.images.moments.map(url => `<img src="${url}" alt="Momen" loading="lazy">`).join('');
+                const momentsHTML = data.images.moments.map(url => 
+                    `<div class="card"><img src="${url}" alt="Momen" loading="lazy"></div>`
+                ).join('');
                 momentsContainer.innerHTML = momentsHTML;
             }
             // Panggil fungsi-fungsi yang perlu berjalan saat halaman dimuat
             startCountdown();
-            setupMomentsSlider();
-            setupSliderObserver();
+            setupCardStackSlider(); // Panggil fungsi slider baru
             loadWishes();
         });
     </script>
