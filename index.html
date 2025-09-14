@@ -864,9 +864,6 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 <div class="gallery-item item-tall hidden anim-zoom-in"> <img src="https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01536-min.webp" alt="Galeri Foto 5" loading="lazy"> </div>
                 <div class="gallery-item hidden anim-slide-from-left"> <img src="https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01578-min.webp" alt="Galeri Foto 6" loading="lazy"> </div>
                 <div class="gallery-item hidden anim-slide-from-right"> <img src="https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01588-min.webp" alt="Galeri Foto 7" loading="lazy"> </div>
-                <div class="gallery-item item-wide hidden anim-zoom-in"> <img src="https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01706-min.webp" alt="Galeri Foto 8" loading="lazy"> </div>
-                <div class="gallery-item hidden anim-fade-in-up"> <img src="https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01741-min.webp" alt="Galeri Foto 9" loading="lazy"> </div>
-                <div class="gallery-item hidden anim-fade-in-up"> <img src="https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01752-min.webp" alt="Galeri Foto 10" loading="lazy"> </div>
             </div>
             <!-- ========================================================== -->
             <!-- =================== GALERI FOTO SELESAI =================== -->
@@ -1045,12 +1042,12 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
                 ],
                 // Gambar untuk slider "Momen Spesial"
                 moments: [
+                    "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01706-min.webp",
                     "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01741-min.webp",
                     "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01752-min.webp",
                     "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01536-min.webp",
                     "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01578-min.webp",
-                    "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01588-min.webp",
-                    "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01706-min.webp"
+                    "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/compressed/DSC01588-min.webp"
                 ],
                 // Ornamen (tetap)
                 ornament: "https://raw.githubusercontent.com/wayanku/undangan-metatah/main/tl.webp"
@@ -1164,27 +1161,37 @@ Jam: 16.00 WITA Undangan upacara potong gigi Ni Made Ayu Handayani.">
             const nextButton = document.querySelector('#momen .slider-nav.next');
             if (!container || !track || !prevButton || !nextButton) return;
  
-            const scrollNext = () => {
-                const scrollAmount = container.clientWidth * 0.75;
-                // Jika sudah di akhir, kembali ke awal. Jika tidak, geser ke slide berikutnya.
-                if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
-                    container.scrollTo({ left: 0, behavior: 'smooth' });
-                } else {
-                    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            let isScrolling = false;
+            const scrollCooldown = 300; // Waktu jeda dalam milidetik (0.3 detik)
+
+            const handleScroll = (direction) => {
+                if (isScrolling) return; // Abaikan klik jika sedang dalam masa jeda
+                isScrolling = true;
+
+                const scrollAmount = container.clientWidth * 0.75; // Jarak geser
+
+                if (direction === 'next') {
+                    // Jika sudah di akhir, kembali ke awal. Jika tidak, geser ke slide berikutnya.
+                    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+                        container.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                    }
+                } else if (direction === 'prev') {
+                    // Jika sudah di awal, geser ke slide terakhir. Jika tidak, geser ke slide sebelumnya.
+                    if (container.scrollLeft <= 0) {
+                        container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+                    } else {
+                        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                    }
                 }
+
+                // Atur ulang status setelah masa jeda selesai
+                setTimeout(() => { isScrolling = false; }, scrollCooldown);
             };
 
-            nextButton.addEventListener('click', scrollNext);
-            
-            prevButton.addEventListener('click', () => {
-                const scrollAmount = container.clientWidth * 0.75;
-                // Jika sudah di awal, geser ke slide terakhir. Jika tidak, geser ke slide sebelumnya.
-                if (container.scrollLeft <= 0) {
-                    container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
-                } else {
-                    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                }
-            });
+            nextButton.addEventListener('click', () => handleScroll('next'));
+            prevButton.addEventListener('click', () => handleScroll('prev'));
         }
 
         async function loadWishes() {
